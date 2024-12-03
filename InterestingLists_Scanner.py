@@ -39,7 +39,7 @@ if use_custom_list:
     genes_of_interest = custom_list
     print(f'\n -- NOTE -- Using custom list: {custom_list}')
 else:
-    genes_of_interest = KTC_GetGeneSet('NOTCH1')
+    genes_of_interest = KTC_GetGeneSet('Master')
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
@@ -75,7 +75,7 @@ AS_colors   = {
 # =============================================================================
 # Defining the structure of the PDF file
 # =============================================================================
-# Here, each key will be a page in a pdf with the values being a list of plots for that page.
+# Here, each key will be a page in a pdf with the values being a list of plots for that page (using the names for plots defined in of dict_df).
 # A first page with info on launch parameters is automatically generated and the last two are populated dynamically
 dict_pdf_layout = {
     # PRC2
@@ -98,7 +98,6 @@ dict_pdf_layout = {
     # Proteomics from Northwestern
     'Proteomics on E7107 treatment - Data from Northwestern' : []
     }
-plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
 #%%This dictionary will contain pandas dataframes of all the Interesting Lists
 #This cell takes a few minutes to run. If it has already been run and loaded into memory and no changes to the dataframe has been made - you could skip it.
@@ -152,6 +151,7 @@ dict_df = {
     "SciAdv_TS3_shSF3B1_rMATS_2"      : pd.read_excel(os.path.join(in_dir, "SciAdv_TS3_shSF3B1_rMATS.xlsx"), sheet_name='shSF3B1.2 VS control') #Table S3. shSF3B1.2-associated splicing events changes in CUTLL1 cells
     }
 #%% ANALYSIS - Run this cell to execute script
+plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
 # =============================================================================
 # Volcano Plot function
@@ -306,10 +306,9 @@ for df_key in dict_df:
             line = '%s,%s,%.3f,%.3f,%.3f' %(gene, SplE, pval, FDR, PSI)
             if 'nan' in line:
                 continue
-            if print_gene_names:
-                print(line)
             if gene in genes_of_interest and pval < thresh_pval and FDR < thresh_FDR and abs(PSI) >= thresh_PSI:
-                print(line)
+                if print_gene_names:
+                    print(line)
                 dict_volcano['i_X'].append(PSI)
                 dict_volcano['i_Y'].append(-math.log10(pval_Clamper(pval)))
                 dict_volcano['geneSymbols'].append(gene)
@@ -450,17 +449,18 @@ for protein in genes_of_interest:
                 else:
                     ctrl_values.append(row[sample])
 
+    plt.figure(figsize=(10,10))
+    sns.set(style="whitegrid", rc={"axes.grid": True, "grid.linestyle": "-"})
+
+    _data = {
+            "Ys" : np.concatenate([ctrl_values, nmdi_values]), 
+            "Condition" : np.repeat(["E7107", "E7107+NMDi"], [3, 3])
+            }
+
+
     if ctrl_values and nmdi_values:
         _mean_control   = np.mean(ctrl_values)
         _mean_treatment = np.mean(nmdi_values)
-
-        plt.figure(figsize=(10,10))
-        sns.set(style="whitegrid", rc={"axes.grid": True, "grid.linestyle": "-"})
-
-        _data = {
-                "Ys" : np.concatenate([ctrl_values, nmdi_values]), 
-                "Condition" : np.repeat(["E7107", "E7107+NMDi"], [3, 3])
-                }
 
         df_data = pd.DataFrame(_data)
         max_value = df_data["Ys"].max()
@@ -480,21 +480,23 @@ for protein in genes_of_interest:
                     showcaps=False,
                     ax=p
                     )
-
-        plt.xlabel("", fontsize=30)
-        plt.ylabel('counts', fontsize=50)
-        plt.title("%s" %(protein), fontsize=60)
-        plt.xticks(fontsize=50)
-        plt.yticks(fontsize=50)
         plt.ylim(0, max_value*1.2)
-        path_file_out = out_dir + '%s_E7107_NMDi_rescue.png' %(protein)
-        plot_path_list.append(path_file_out)
-        dict_pdf_layout['E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)'].append(os.path.basename(path_file_out).split('.png')[0])
-        plt.savefig(path_file_out)
-        plt.show()
-        plt.close()
+
     else:
+        plt.gcf().text(0.5, 0.5, '%s not found in data' %(protein), fontsize=12 * scale_factor, ha='center', va='center', color='red')
         print('NMDi plot failed for: %s' %(protein))
+
+    path_file_out = out_dir + '%s_E7107_NMDi_rescue.png' %(protein)
+    plot_path_list.append(path_file_out)
+    dict_pdf_layout['E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)'].append(os.path.basename(path_file_out).split('.png')[0])
+    plt.xlabel("", fontsize=30)
+    plt.ylabel('counts', fontsize=50)
+    plt.title("%s" %(protein), fontsize=60)
+    plt.xticks(fontsize=50)
+    plt.yticks(fontsize=50)
+    plt.savefig(path_file_out)
+    plt.show()
+    plt.close()
 
 
 # =============================================================================
@@ -582,15 +584,22 @@ for p in genes_of_interest:
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib import image as mpimg
 from collections import defaultdict
+import textwrap
 
+genes_sorted = '  '.join(sorted(genes_of_interest))
 first_page_lines = [
-    'Only events that clear thresholds of significance are highlighted',
+
+    'Only events that clear thresholds of significance are highlighted:',
     f'FDR threshold (rMATS): <{thresh_FDR}',
     f'pval threshold (others): <{thresh_pval}',
     f'dPSI threshold (rMATS): >= abs({thresh_PSI})',
     f'l2FC threshold (others): >= abs({thresh_l2FC})',
-    f'maximum text annotations per plot:  {max_labels}'
+    f'maximum text annotations per plot:  {max_labels}',
+    'Genes searched:',
+    f'{genes_sorted}'
     ]
+
+
 
 def organize_plots_into_pages(plot_path_list, dict_pdf_layout):
     # Reverse the layout to map plot names to page keys
@@ -636,10 +645,15 @@ if make_pdf:
         plt.text(0.5, 0.95, "Launch Parameters:", fontsize=20, ha='center', va='top', transform=ax.transAxes)
         # Parameters list
         y_start = 0.85
-        line_spacing = 0.05
-        
+        line_spacing = 0.035
+        wrap_width=70
+
         for idx, string in enumerate(first_page_lines):
-            plt.text(0.1, y_start - idx * line_spacing, string, fontsize=12, ha='left', va='top', transform=ax.transAxes)
+            # Wrap the string
+            wrapped_lines = textwrap.wrap(string, width=wrap_width)
+            # Plot each line separately
+            for line_idx, line in enumerate(wrapped_lines):
+                plt.text( 0.1, y_start - (idx + line_idx * 0.5) * line_spacing, line, fontsize=10, ha='left', va='top', transform=ax.transAxes)
         # Save the first page
         pdf.savefig(fig)
         plt.close(fig)
