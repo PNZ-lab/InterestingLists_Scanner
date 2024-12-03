@@ -42,12 +42,12 @@ else:
     genes_of_interest = KTC_GetGeneSet('Kevin')
 
 # =============================================================================
-# Thresholds if significance and magnitude
+# Thresholds of significance and magnitude for noteworthy events
 # =============================================================================
 #Values below will be used to identify events of size and significance that we care to find and graph
 thresh_pval       = 0.05 #Must be lower than
+thresh_FDR        = 0.05 #Must be lower than (Significance metric used in rMATS)
 thresh_PSI        = 0.2 #Must be more substantial than (value of delta Percent Spliced In)
-thresh_FDR        = 0.05 #Must be lower than (Significance metric used in )
 thresh_l2FC       = 1.00 #Must be more substantial than
 #Values below are used for details in figure
 scale_factor      = 4 # Used to scale certain visuals of plots
@@ -74,8 +74,8 @@ AS_colors   = {
 # =============================================================================
 # Defining the structure of the PDF file
 # =============================================================================
-# Here, each key will be a page in a pdf with the values a list of content for that page.
-# A first page with info is automatically generated and the last two are populated dynamically
+# Here, each key will be a page in a pdf with the values being a list of plots for that page.
+# A first page with info on launch parameters is automatically generated and the last two are populated dynamically
 dict_pdf_layout = {
     # PRC2
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Expression' : ['PRC2_edgeR_E7107', 'PRC2_edgeR_Indisulam', 'PRC2_edgeR_Tazemetostat', 'PRC2_edgeR_KO1', 'PRC2_edgeR_KO2'],
@@ -94,17 +94,13 @@ dict_pdf_layout = {
     'Han, 2022, Science Advances - shSF3B1, Differential Expression and Splicing' : ['SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS3_shSF3B1_rMATS_1', 'SciAdv_TS3_shSF3B1_rMATS_2'],
     # NMD-related (from some Table 5 somewhere)
     'E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)' : [],
-    # Proteomics from 
+    # Proteomics from Northwestern
     'Proteomics on E7107 treatment - Data from Northwestern' : []
     }
-plot_path_list = [] # Will contain paths to all figures generated for pdf generation.
+plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
 #%%This dictionary will contain pandas dataframes of all the Interesting Lists
 dict_df = {
-    # Jonas T-ALL&STM 3seq, m6a, expression, splicing
-    "TallSTM_path_rMATS"              : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='eclip_expression_splicing_data'),
-    "TallSTM_path_deseq"              : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='m6a_with_expression_dataset'),
-
     #PRC2
     'PRC2_ATAC_E7070'                 : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7070_v_ctrl.tsv"), sep='\t'),
     'PRC2_ATAC_E7107'                 : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7107_v_ctrl.tsv"), sep='\t'),
@@ -129,7 +125,9 @@ dict_df = {
     'Taz_v_DMSO_proteomics_perseus'   : pd.read_csv(os.path.join(in_dir,   "TazvsDMSO.txt"), sep='\t'),
     'KO1_v_DMSO_proteomics_perseus'   : pd.read_csv(os.path.join(in_dir,   "KO1vsDMSO.txt"), sep='\t'),
     'KO2_v_DMSO_proteomics_perseus'   : pd.read_csv(os.path.join(in_dir,   "KO2vsDMSO.txt"), sep='\t'),
-
+    # Jonas T-ALL&STM 3seq, m6a, expression, splicing
+    "TallSTM_path_rMATS"              : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='eclip_expression_splicing_data'),
+    "TallSTM_path_deseq"              : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='m6a_with_expression_dataset'),
     #T-ALL vs. Thymus
     'TALL_rMATS'                      : pd.read_csv(os.path.join(in_dir,   "thymus_v_TALL_rMATS_compiled.tsv"), sep='\t'),
     'TALL_deseq'                      : pd.read_excel(os.path.join(in_dir, "TALL1. Expression DE-SEQ T_All vs Thymus_BE-March, 2023.xlsx"), sheet_name='Blad1'),
@@ -138,10 +136,8 @@ dict_df = {
     # High Risk versus Low Risk
     'risk_edgeR'                      : pd.read_excel(os.path.join(in_dir, "HRvsLR1. Expression Low-Risk_VS_High-Risk.htseq.edgeR.xlsx"), sheet_name='Low-Risk_VS_High-Risk.htseq.edg'),
     'risk_rMATS_kasper'               : pd.read_csv(os.path.join(in_dir,   "rmats_combined_analysis.tsv"), sep='\t'),
-    #Han below
     #Han et al. transcription changes are dose-dependent on inhibition by E7107 
-    #E7107 splicing
-    "E7107_TS2_24_splicing_rMATS"         : pd.read_excel(os.path.join(in_dir, "E7107-induced splicng changes sciadv.abj8357_table_s2.xlsx"), sheet_name="24h FDR<0.05 PSI>0.1", skiprows=1),
+    "E7107_TS2_24_splicing_rMATS"     : pd.read_excel(os.path.join(in_dir, "E7107-induced splicng changes sciadv.abj8357_table_s2.xlsx"), sheet_name="24h FDR<0.05 PSI>0.1", skiprows=1),
     "SciAdv_TS4_E7107_edgeR_15min"    : pd.read_excel(os.path.join(in_dir, "SciAdv_TS4_E7107_DoseDependent_edgeR.xlsx"), sheet_name='DMSO_vs_E7107_15min.htseq.edgeR'), #Table S4. E7107-associated gene expression changes (CUTLL1, 15min)
     "SciAdv_TS4_E7107_edgeR_1.5nm"    : pd.read_excel(os.path.join(in_dir, "SciAdv_TS4_E7107_DoseDependent_edgeR.xlsx"), sheet_name='DMSO_vs_E7107_1.5nm.htseq.edgeR'), #Table S4. E7107-associated splicing events changes in CUTLL1 cells (1.5nm)
     "SciAdv_TS4_E7107_edgeR_3.0nm"    : pd.read_excel(os.path.join(in_dir, "SciAdv_TS4_E7107_DoseDependent_edgeR.xlsx"), sheet_name='DMSO_vs_E7107_3nm.htseq.edgeR'), #Table S4. E7107-associated gene expression changes in CUTLL1 cells (3nm)
@@ -164,6 +160,7 @@ def pval_Clamper(_float):
 	else:
 		return _float
 
+#This is the main function for generating volcano plots. It takes data and a type of plot (splicing, DGE, proteomics).
 def Volcano(dict_volcano, name, analType):
     print("Making figure for: %s" %(name), analType)
     plt.figure(figsize=(10,10))
@@ -278,7 +275,7 @@ print()
 print('Genes searched:')
 print(' '.join(sorted(genes_of_interest)))
 
-
+#Here we loop through each dataframe and feed the necessary data to the Volcano function
 for df_key in dict_df:
     print()
     df = dict_df[df_key]
@@ -497,9 +494,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
-
 df = pd.read_excel(os.path.join(in_dir, "PN 031821_tc-786_Marinaccio_C_humanTMT16_Northwestern.xlsx"), sheet_name="tc-786_proteinquant", skiprows=4, header=1)
-#
 
 samples = {
     "DMSO"     : ["129C", "130N", "130C"],
@@ -620,10 +615,8 @@ if make_pdf:
         cols = math.ceil(math.sqrt(n_items))  # Start with a square grid
         rows = math.ceil(n_items / cols)  # Adjust rows to fit all items
         return rows, cols
-    
-    # # Create the PDF
-    # path_pdf = os.path.join(out_dir, basename_pdf)
 
+    # Create the PDF
     with PdfPages(path_pdf) as pdf:
         # Create the first page with parameters
         fig, ax = plt.subplots(figsize=(8.3, 11.7))  # A4 dimensions in inches
@@ -673,7 +666,7 @@ else:
     print('PDF not requested')
 
 
-#%% This section prints out the genes that appear the most across all scanned dataframes
+#%% To satisfy the curious, this section prints out the genes that appear the most across all scanned dataframes
 thresh_appearance_fraction = 3 # A gene must appear in at least 1 in every n dataframes to be considered a frequent hit
 thresh_appearances = math.ceil(len(dict_df)/thresh_appearance_fraction) #How many dataframes must a gene have been seen in before it is interesting?
 frequent_genes = [key for key, value in appearances.items() if value >= thresh_appearances]
@@ -681,5 +674,4 @@ frequent_genes_sorted = sorted(frequent_genes, key=lambda k: appearances[k], rev
 print()
 print("Genes found %i or more times in the %i dataframes:" %(thresh_appearances, len(dict_df)))
 for gene in frequent_genes_sorted:
- 	print(gene, appearances[gene])
-# 	print(gene)
+    print(gene, appearances[gene])
