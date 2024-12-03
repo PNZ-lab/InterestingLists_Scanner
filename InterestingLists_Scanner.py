@@ -483,7 +483,7 @@ for protein in genes_of_interest:
         plt.ylim(0, max_value*1.2)
 
     else:
-        plt.gcf().text(0.5, 0.5, '%s not found in data' %(protein), fontsize=12 * scale_factor, ha='center', va='center', color='red')
+        plt.gcf().text(0.5, 0.5, '%s\nnot found in data' %(protein), fontsize=12 * scale_factor, ha='center', va='center', color='red')
         print('NMDi plot failed for: %s' %(protein))
 
     path_file_out = out_dir + '%s_E7107_NMDi_rescue.png' %(protein)
@@ -567,7 +567,7 @@ for p in genes_of_interest:
         plt.xticks(fontsize=50)
         plt.yticks(fontsize=50)
     else:
-        plt.gcf().text(0.5, 0.5, '%s not found in data' %(protein), fontsize=12 * scale_factor, ha='center', va='center', color='red')
+        plt.gcf().text(0.5, 0.5, '%s\nnot found in data' %(protein), fontsize=12 * scale_factor, ha='center', va='center', color='red')
 
     path_file_out = out_dir + 'E7107_MS_%s.png' %(protein)
     plot_path_list.append(path_file_out)
@@ -598,8 +598,6 @@ first_page_lines = [
     'Genes searched:',
     f'{genes_sorted}'
     ]
-
-
 
 def organize_plots_into_pages(plot_path_list, dict_pdf_layout):
     # Reverse the layout to map plot names to page keys
