@@ -39,7 +39,7 @@ if use_custom_list:
     genes_of_interest = custom_list
     print(f'\n -- NOTE -- Using custom list: {custom_list}')
 else:
-    genes_of_interest = KTC_GetGeneSet('Kevin')
+    genes_of_interest = KTC_GetGeneSet('NOTCH1')
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
@@ -51,14 +51,15 @@ thresh_PSI        = 0.2 #Must be more substantial than (value of delta Percent S
 thresh_l2FC       = 1.00 #Must be more substantial than
 #Values below are used for details in figure
 scale_factor      = 4 # Used to scale certain visuals of plots
-dp_size           = 200
+dp_size           = 200 #Scales data points size
 max_labels        = 20 # Set a limit on the number of events annotated with gene names. Prevents overcrowding.
 unbiased          = False # If True, does not filter results based on genes of interest. Does not create a plot for these other genes but still prints gene names to the terminal for Enrichr etc.
 only_plot_if_sign = False #Plots are only generated for each dataset if any significant events are found
 plot_text         = True # Label data points with protein names
 plot_legend       = True #Create legend for differential splicing plots (to identify types of events)
-plot_mean_value   = False
-make_pdf          = True
+plot_mean_value   = False #Create a yellow vertical line at the mean of all values on the 1st axis
+print_gene_names  = False #Print the names of events that clear the thresholds to the terminal
+make_pdf          = True #Create a pdf that contains all plots
 #Colors for events for genes_of_interest and genes not of interest
 c_inte = '#4494c9' #blue
 c_nint = '#dedede' #grey
@@ -100,6 +101,7 @@ dict_pdf_layout = {
 plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
 #%%This dictionary will contain pandas dataframes of all the Interesting Lists
+#This cell takes a few minutes to run. If it has already been run and loaded into memory and no changes to the dataframe has been made - you could skip it.
 dict_df = {
     #PRC2
     'PRC2_ATAC_E7070'                 : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7070_v_ctrl.tsv"), sep='\t'),
@@ -149,8 +151,11 @@ dict_df = {
     "SciAdv_TS3_shSF3B1_rMATS_1"      : pd.read_excel(os.path.join(in_dir, "SciAdv_TS3_shSF3B1_rMATS.xlsx"), sheet_name='shSF3B1.1 VS control'), # Table S3. shSF3B1.1-associated splicing events changes in CUTLL1 cells
     "SciAdv_TS3_shSF3B1_rMATS_2"      : pd.read_excel(os.path.join(in_dir, "SciAdv_TS3_shSF3B1_rMATS.xlsx"), sheet_name='shSF3B1.2 VS control') #Table S3. shSF3B1.2-associated splicing events changes in CUTLL1 cells
     }
-#%% Volcano Plot function =====================================================
+#%% ANALYSIS - Run this cell to execute script
 
+# =============================================================================
+# Volcano Plot function
+# =============================================================================
 x_window = 1 # Clamps the x-axis of differential splicing (all values are between -1 and 1)
 min_pval = 0.00000000000000000001 # Used as a ceiling to limit the scale of the 2nd axis with miniscule p-values
 
@@ -285,7 +290,8 @@ for df_key in dict_df:
     if 'rMATS' in df_key:
         alreadyAdded = []
         print(df_key)
-        print('Gene,Event,pVal,FDR,PSIdiff')
+        if print_gene_names:
+            print('Gene,Event,pVal,FDR,PSIdiff')
         dict_volcano = {'ni_X' : [], 'ni_Y' : [], 'i_X' : [], 'i_Y' : [], 'geneSymbols': []}
         AS_list	     = []
         for index, row in df.iterrows():
@@ -300,7 +306,8 @@ for df_key in dict_df:
             line = '%s,%s,%.3f,%.3f,%.3f' %(gene, SplE, pval, FDR, PSI)
             if 'nan' in line:
                 continue
-            print(line)
+            if print_gene_names:
+                print(line)
             if gene in genes_of_interest and pval < thresh_pval and FDR < thresh_FDR and abs(PSI) >= thresh_PSI:
                 print(line)
                 dict_volcano['i_X'].append(PSI)
@@ -327,7 +334,8 @@ for df_key in dict_df:
     elif 'edgeR' in df_key or 'deseq' in df_key or 'ATAC' in df_key:
         alreadyAdded = []
         print(df_key)
-        print('Gene,pVal,log2FC')
+        if print_gene_names:
+            print('Gene,pVal,log2FC')
         dict_volcano = {'ni_X' : [], 'ni_Y' : [], 'i_X' : [], 'i_Y' : [], 'geneSymbols': []}
         for index, row in df.iterrows():
             if 'edgeR' in df_key:
@@ -339,7 +347,8 @@ for df_key in dict_df:
             pval = row['padj']
             line = '%s,%.3f,%.3f' %(gene, pval, l2FC)
             if gene in genes_of_interest and pval < thresh_pval and abs(l2FC) >= thresh_l2FC:
-                print(line)
+                if print_gene_names:
+                    print(line)
                 dict_volcano['i_X'].append(l2FC)
                 dict_volcano['i_Y'].append(-math.log10(pval_Clamper(pval)))
                 dict_volcano['geneSymbols'].append(gene)
@@ -363,7 +372,8 @@ for df_key in dict_df:
     elif 'proteomics' in df_key:
         alreadyAdded = []
         print(df_key)
-        print('Gene,pVal,log2FC')
+        if print_gene_names:
+            print('Gene,pVal,log2FC')
         dict_volcano = {'ni_X' : [], 'ni_Y' : [], 'i_X' : [], 'i_Y' : [], 'geneSymbols': []}
         for index, row in df.iterrows():
             if 'perseus' in df_key:
@@ -378,7 +388,8 @@ for df_key in dict_df:
                 pval = 10**(-1*neglogpval)
             line = '%s,%.3f,%.3f' %(gene, pval, l2FC)
             if gene in genes_of_interest and pval < thresh_pval and abs(l2FC) >= thresh_l2FC:
-                print(line)
+                if print_gene_names:
+                    print(line)
                 dict_volcano['i_X'].append(l2FC)
                 dict_volcano['i_Y'].append(-math.log10(pval_Clamper(pval)))
                 dict_volcano['geneSymbols'].append(gene)
