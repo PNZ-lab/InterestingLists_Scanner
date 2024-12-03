@@ -39,7 +39,7 @@ if use_custom_list:
     genes_of_interest = custom_list
     print(f'\n -- NOTE -- Using custom list: {custom_list}')
 else:
-    genes_of_interest = KTC_GetGeneSet('Master')
+    genes_of_interest = KTC_GetGeneSet('m6a_erasers')
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
@@ -433,7 +433,7 @@ import numpy as np
 samples = ["CUTLL1.3nM.E7107.Rep1", "CUTLL1.3nM.E7107.Rep2", "CUTLL1.3nM.E7107.Rep3", "CUTLL1.3nM.E7107.5uM.NMDi.Rep1", "CUTLL1.3nM.E7107.5uM.NMDi.Rep2", "CUTLL1.3nM.E7107.5uM.NMDi.Rep3"]
 
 
-for protein in genes_of_interest:
+for protein in sorted(genes_of_interest):
     ctrl_values = []
     nmdi_values = []
 
@@ -514,7 +514,7 @@ samples = {
     "E7107" : [ "131N", "131C", "132N", "132C"]
     }
 
-for p in genes_of_interest:
+for p in sorted(genes_of_interest):
     protein = p
     values = {
         "DMSO"     : [],
@@ -571,7 +571,7 @@ for p in genes_of_interest:
 
     path_file_out = out_dir + 'E7107_MS_%s.png' %(protein)
     plot_path_list.append(path_file_out)
-    print(os.path.basename(path_file_out).split('.png')[0])
+    # print(os.path.basename(path_file_out).split('.png')[0])
     dict_pdf_layout['Proteomics on E7107 treatment - Data from Northwestern'].append(os.path.basename(path_file_out).split('.png')[0])
     plt.savefig(path_file_out)
     plt.show()
