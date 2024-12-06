@@ -40,7 +40,7 @@ path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file p
 #            genes_of_interest = KTC_GetGeneSet('Laura')
 #        c) Search Msigdb for a set of genes with that name. Default database is human (2024.1.Hs)), e.g:
 #            i)   genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1') # Find names here: https://www.gsea-msigdb.org/gsea/msigdb/index.jsp
-#            ii)  genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Hs') # Funtionally identical to as above
+#            ii)  genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Hs') # Funtionally identical to the above
 #            iii) genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Mm') # Searching the mouse equivalent
 #        d) If all of the above fail, it defaults to interpret the string inout as a single gene, e.g:
 #            genes_of_interest = KTC_GetGeneSet('MYC')
