@@ -39,7 +39,7 @@ if use_custom_list:
     genes_of_interest = custom_list
     print(f'\n -- NOTE -- Using custom list: {custom_list}')
 else:
-    genes_of_interest = KTC_GetGeneSet('Laura')
+    genes_of_interest = KTC_GetGeneSet('WTAP')
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
