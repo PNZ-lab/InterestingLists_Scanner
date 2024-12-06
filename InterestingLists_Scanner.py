@@ -29,17 +29,24 @@ path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file p
 # =============================================================================
 # Defining a list of genes
 # =============================================================================
-# genes_of_interest is a list of the gene names as strings that will be searched.
+# genes_of_interest is a list of gene names as strings that will be searched for in the databases
 # You can either:
-#    1) Define your own custom list of gene names here in custom_list (use_custom_list=True))
-#    2) Use KTC_GetGeneSet from KTC_functions.py to fetch a pre-defined list of genes (use_custom_list=False)
-use_custom_list = False
-custom_list = ['WTAP']
-if use_custom_list:
-    genes_of_interest = custom_list
-    print(f'\n -- NOTE -- Using custom list: {custom_list}')
-else:
-    genes_of_interest = KTC_GetGeneSet('WTAP')
+#    1) Define a list of genes yourself, e.g:
+#         genes_of_interest = ['MYC', 'TAL1', 'RBM39']
+#    2) Use KTC_GetGeneSet to find a set of genes. It will try - in order - to:
+#        a) Check if the input is a list. If so, it will interpret it as a set of genes. e.g:
+#            genes_of_interest = KTC_GetGeneSet(['MYC', 'TAL1', 'RBM39'])
+#        b) Locate a predefined set of genes by a name in the dictionary gene_sets in KTC_functions.py, e.g:
+#            genes_of_interest = KTC_GetGeneSet('Laura')
+#        c) Search Msigdb for a set of genes with that name. Default database is human (2024.1.Hs)), e.g:
+#            i)   genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1') # Find names here: https://www.gsea-msigdb.org/gsea/msigdb/index.jsp
+#            ii)  genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Hs') # Funtionally identical to as above
+#            iii) genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Mm') # Searching the mouse equivalent
+#        d) If all of the above fail, it defaults to interpret the string inout as a single gene, e.g:
+#            genes_of_interest = KTC_GetGeneSet('MYC')
+
+genes_of_interest = ['MYC', 'TAL1', 'RBM39']
+genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1')
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
@@ -89,9 +96,9 @@ dict_pdf_layout = {
     # Jonas T-ALL&STM 3seq, m6a, expression, splicing
     'T-ALL vs STM1 - Differential Expression and Splicing' : ['TallSTM_path_deseq', 'TallSTM_path_rMATS'],
     # T-ALL vs thymus
-    'T-ALL vs thymus - Differential Expression, Splicing, and Proteomics' : ['TALL_rMATS', 'TALL_deseq', 'TALL_proteomics'],
+    'T-ALL vs thymus - Differential Expression, Proteomics, and Splicing' : ['TALL_deseq', 'TALL_proteomics', 'TALL_rMATS'],
     # Science Advances paper
-    'Han, 2022, Science Advances - E7107, Differential Expression and Splicing' : ['E7107_TS2_24_splicing_rMATS', 'SciAdv_TS4_E7107_edgeR_15min', 'SciAdv_TS4_E7107_edgeR_1.5nm', 'SciAdv_TS4_E7107_edgeR_3.0nm'],
+    'Han, 2022, Science Advances - E7107, Differential Expression and Splicing' : ['SciAdv_TS4_E7107_edgeR_15min', 'SciAdv_TS4_E7107_edgeR_1.5nm', 'SciAdv_TS4_E7107_edgeR_3.0nm', 'E7107_TS2_24_splicing_rMATS'],
     'Han, 2022, Science Advances - shSF3B1, Differential Expression and Splicing' : ['SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS3_shSF3B1_rMATS_1', 'SciAdv_TS3_shSF3B1_rMATS_2'],
     # NMD-related (from some Table 5 somewhere)
     'E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)' : [],
@@ -459,9 +466,8 @@ for protein in sorted(genes_of_interest):
 
     _data = {
             "Ys" : np.concatenate([ctrl_values, nmdi_values]), 
-            "Condition" : np.repeat(["E7107", "E7107+NMDi"], [3, 3])
+            "Condition": np.repeat(["E7107", "E7107+NMDi"], [len(ctrl_values), len(nmdi_values)])
             }
-
 
     if ctrl_values and nmdi_values:
         _mean_control   = np.mean(ctrl_values)
