@@ -171,6 +171,11 @@ dict_df = {
     'Lisa_PTEN_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST2_significant_DGE_Pten.csv')),
     'Lisa_LMO2_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST3_significant_DGE_Lmo2.csv'))
     }
+
+df_E7107_NW_MS                          = pd.read_excel(os.path.join(in_dir, "PN 031821_tc-786_Marinaccio_C_humanTMT16_Northwestern.xlsx"), sheet_name="tc-786_proteinquant", skiprows=4, header=1)
+df_E7107_rescue                         = pd.read_excel(os.path.join(in_dir, "NMD-related-Table 5. E7107 and NMDi-associated gene exprression changes (CUTLL1, 24h).xlsx"), sheet_name="E7107_vs_E7107-NMDi.htseq.edgeR", skiprows=1)
+
+
 #%% ANALYSIS - Run this cell to execute script
 plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
@@ -448,7 +453,6 @@ for df_key in dict_df:
 # NMDi rescue
 # =============================================================================
 # Loading in the data on NMDi rescue
-df_E7107_rescue = pd.read_excel(os.path.join(in_dir, "NMD-related-Table 5. E7107 and NMDi-associated gene exprression changes (CUTLL1, 24h).xlsx"), sheet_name="E7107_vs_E7107-NMDi.htseq.edgeR", skiprows=1)
 
 # Creating graphs for NMDi rescue
 import seaborn as sns
@@ -531,8 +535,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 
-df = pd.read_excel(os.path.join(in_dir, "PN 031821_tc-786_Marinaccio_C_humanTMT16_Northwestern.xlsx"), sheet_name="tc-786_proteinquant", skiprows=4, header=1)
-
 samples = {
     "DMSO"     : ["129C", "130N", "130C"],
     "E7107"    : [ "131N", "131C", "132N", "132C"]
@@ -545,7 +547,7 @@ for p in sorted(genes_of_interest):
         "DMSO"     : [],
         "E7107" : []
         }
-    for index, row in df.iterrows():
+    for index, row in df_E7107_NW_MS.iterrows():
         try:
             protein_desc = row["Protein Description"]
             geneSymbol   = str(protein_desc.split("GN=")[1].split()[0]).capitalize()
