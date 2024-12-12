@@ -47,8 +47,8 @@ path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file p
 #            genes_of_interest = KTC_GetGeneSet('MYC')
 # The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
 
-genes_of_interest = ['NOTCH1', 'BCL11B']
-# genes_of_interest = KTC_GetGeneSet('MYC')
+genes_of_interest = ['IMPA2', 'TRIM60']
+genes_of_interest = KTC_GetGeneSet('PRC2')
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
@@ -107,6 +107,8 @@ dict_pdf_layout = {
     'Blood 2024' : ['CD19B_v_BALL_rMATS', 'RPB1_v_IgG_IP_proteomics_perseus'],
     # Science Advances, Lisa, 2024
     'Science Advances, Lisa, 2024' : ['72h_post_PSIP1_KD_JURKAT_deseq', 'Lisa_PTEN_deseq', 'Lisa_LMO2_deseq'],
+    # STM2457
+    'STM2457' : ['STM2457_TMT2_results_STM_R_DMSO_L.txt', 'STM2457_TMT3_results_STM_R_DMSO_L.txt'],
     # NMD-related (from some Table 5 somewhere)
     'E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)' : [],
     # Proteomics from Northwestern
@@ -123,6 +125,9 @@ dict_df = {
     # 'PRC2_ATAC_Taz'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_Taz_v_ctrl.tsv"), sep='\t'),
     # 'PRC2_ATAC_KO1'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO1_v_ctrl.tsv"), sep='\t'),
     # 'PRC2_ATAC_KO2'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO2_v_ctrl.tsv"), sep='\t'),
+    #STM2457
+    'STM2457_TMT2_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT2_results_STM_R_DMSO_L.txt'), sep='\t'),
+    'STM2457_TMT3_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT3_results_STM_R_DMSO_L.txt'), sep='\t'),
     #GSK126 (EZH2 inhibitor) proteomics
     'GSK126_v_DMSO_proteomics_perseus'  : pd.read_csv(os.path.join(in_dir,   "GSK126_R_vs_DMSO_L.txt"), sep='\t'),
     # PRC2 rMATS
@@ -149,7 +154,7 @@ dict_df = {
     #T-ALL vs. Thymus
     'TALL_rMATS'                        : pd.read_csv(os.path.join(in_dir,   "thymus_v_TALL_rMATS_compiled.tsv"), sep='\t'),
     'TALL_deseq'                        : pd.read_excel(os.path.join(in_dir, "TALL1. Expression DE-SEQ T_All vs Thymus_BE-March, 2023.xlsx"), sheet_name='Blad1'),
-    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 202z3.xlsx"), sheet_name='S3 DiffExpression testing'),
+    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 2023.xlsx"), sheet_name='S3 DiffExpression testing'),
     #Igor proteomics on 24h incubation with E7107
     "E7107_24_proteomics"               : pd.read_csv(os.path.join(in_dir,   "DMSOvs24hE7107.csv")),
     # High Risk versus Low Risk
@@ -169,7 +174,7 @@ dict_df = {
     "SciAdv_TS3_shSF3B1_rMATS_2"        : pd.read_excel(os.path.join(in_dir, "SciAdv_TS3_shSF3B1_rMATS.xlsx"), sheet_name='shSF3B1.2 VS control'), #Table S3. shSF3B1.2-associated splicing events changes in CUTLL1 cells
     #Blood 2024
     'CD19B_v_BALL_rMATS'                : pd.read_csv(os.path.join(in_dir,   'Blood_2024_CD19B_v_BALL.csv')),
-    'RPB1_v_IgG_IP_proteomics_perseus'  : pd.read_excel(os.path.join(in_dir, 'Blood_2024_RNApolII_IP_proteomics.xlsx'), sheet_name='IgG vs RPB1', skiprows=3),
+    'RPB1_v_IgG_IP_proteomics        '  : pd.read_excel(os.path.join(in_dir, 'Blood_2024_RNApolII_IP_proteomics.xlsx'), sheet_name='IgG vs RPB1', skiprows=3),
     #SciAdv 2024, Demoen
     '72h_post_PSIP1_KD_JURKAT_deseq'    : pd.read_csv(os.path.join(in_dir,   'ST6_significant_DGE_Jurkat_PSIP1_KD.csv')),
     'Lisa_PTEN_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST2_significant_DGE_Pten.csv')),
@@ -408,12 +413,11 @@ for df_key in dict_df:
                 except:
                     pval=row['neglogpval']
                     l2FC=row['log2FC']
-                
             elif 'TALL_proteomics' in df_key:
                 gene = str(row['Gene names']).capitalize()
                 l2FC = row['log2FC']
                 pval = row['adj P Val_T ALLvsThymus_']
-            elif 'Blood_2024' in df_key:
+            elif 'RPB1_v_IgG_IP' in df_key:
                 gene = row['Genes']
                 l2FC = row['log2FC']
                 pval = row['p-value']
@@ -423,7 +427,7 @@ for df_key in dict_df:
                 neglogpval = row['neglogPVal']
                 pval = 10**(-1*neglogpval)
             line = '%s,%.3f,%.3f' %(gene, pval, l2FC)
-            if gene.capitalize() in genes_of_interest_mod and pval < thresh_pval and abs(l2FC) >= thresh_l2FC:
+            if str(gene).capitalize() in genes_of_interest_mod and pval < thresh_pval and abs(l2FC) >= thresh_l2FC:
                 if print_gene_names:
                     print(line)
                 dict_volcano['i_X'].append(l2FC)
@@ -636,6 +640,9 @@ first_page_lines = [
     f'    {genes_sorted}'
     ]
 
+print()
+print('--- Preparing pdf ---')
+
 def organize_plots_into_pages(plot_path_list, dict_pdf_layout):
     # Reverse the layout to map plot names to page keys
     name_to_page = {}
@@ -694,7 +701,7 @@ if make_pdf:
         plt.close(fig)
 
         for page_title, paths in pages.items():
-            print(page_title)
+            print('    ', page_title)
             n_plots = len(paths)
             rows, cols = calculate_grid_dimensions(n_plots)  # Dynamically determine grid size
             # Get dynamic figure size based on the number of plots
