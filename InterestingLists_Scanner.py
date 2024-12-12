@@ -23,6 +23,7 @@ from matplotlib.ticker import MaxNLocator
 # =============================================================================
 
 in_dir       = '/Volumes/cmgg_pnlab/Kasper/Data/Interesting_Lists' # Directory where all "Interesting lists" are located
+in_dir       = '/Users/kasperthorhaugechristensen/Desktop/Interesting_Lists'
 out_dir      = r'/Users/kasperthorhaugechristensen/Desktop/Dumpbox2/' #Directory where plots are saved
 path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file produced. Output directory is 
 
@@ -46,8 +47,8 @@ path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file p
 #            genes_of_interest = KTC_GetGeneSet('MYC')
 # The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
 
-genes_of_interest = ['MyC', 'tAl1', 'RBM39']
-genes_of_interest = KTC_GetGeneSet('PSIP1')
+genes_of_interest = ['NOTCH1', 'BCL11B']
+# genes_of_interest = KTC_GetGeneSet('MYC')
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
@@ -90,6 +91,7 @@ dict_pdf_layout = {
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Expression' : ['PRC2_edgeR_E7107', 'PRC2_edgeR_Indisulam', 'PRC2_edgeR_Tazemetostat', 'PRC2_edgeR_KO1', 'PRC2_edgeR_KO2'],
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Splicing' : ['E7107_rMATS', 'E7070_rMATS', 'Tazemetostat_rMATS', 'KO1_rMATS', 'KO2_rMATS'],
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Proteomics' : ['E7107_v_DMSO_proteomics_perseus', 'E7070_v_DMSO_proteomics_perseus', 'Taz_v_DMSO_proteomics_perseus', 'KO1_v_DMSO_proteomics_perseus', 'KO2_v_DMSO_proteomics_perseus'],
+    'EZH2 Inhibitor GSK126' : ['GSK126_v_DMSO_proteomics_perseus'],
     #Igor E7107 proteomics
     'DMSO vs 24h E7107 - Igor proteomics' : ['E7107_24_proteomics'],
     #High risk vs Low risk
@@ -116,11 +118,13 @@ dict_pdf_layout = {
 print('\n -- Reading in data...')
 dict_df = {
     #PRC2
-    'PRC2_ATAC_E7070'                   : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7070_v_ctrl.tsv"), sep='\t'),
-    'PRC2_ATAC_E7107'                   : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7107_v_ctrl.tsv"), sep='\t'),
-    'PRC2_ATAC_Taz'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_Taz_v_ctrl.tsv"), sep='\t'),
-    'PRC2_ATAC_KO1'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO1_v_ctrl.tsv"), sep='\t'),
-    'PRC2_ATAC_KO2'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO2_v_ctrl.tsv"), sep='\t'),
+    # 'PRC2_ATAC_E7070'                   : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7070_v_ctrl.tsv"), sep='\t'),
+    # 'PRC2_ATAC_E7107'                   : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7107_v_ctrl.tsv"), sep='\t'),
+    # 'PRC2_ATAC_Taz'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_Taz_v_ctrl.tsv"), sep='\t'),
+    # 'PRC2_ATAC_KO1'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO1_v_ctrl.tsv"), sep='\t'),
+    # 'PRC2_ATAC_KO2'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO2_v_ctrl.tsv"), sep='\t'),
+    #GSK126 (EZH2 inhibitor) proteomics
+    'GSK126_v_DMSO_proteomics_perseus'  : pd.read_csv(os.path.join(in_dir,   "GSK126_R_vs_DMSO_L.txt"), sep='\t'),
     # PRC2 rMATS
     'E7107_rMATS'                       : pd.read_excel(os.path.join(in_dir, 'PRC2_rMATS_results_PSI0.05_FDR0.1.xlsx'), sheet_name='E7107'),
     'E7070_rMATS'                       : pd.read_excel(os.path.join(in_dir, 'PRC2_rMATS_results_PSI0.05_FDR0.1.xlsx'), sheet_name='Indisulam'),
@@ -145,7 +149,7 @@ dict_df = {
     #T-ALL vs. Thymus
     'TALL_rMATS'                        : pd.read_csv(os.path.join(in_dir,   "thymus_v_TALL_rMATS_compiled.tsv"), sep='\t'),
     'TALL_deseq'                        : pd.read_excel(os.path.join(in_dir, "TALL1. Expression DE-SEQ T_All vs Thymus_BE-March, 2023.xlsx"), sheet_name='Blad1'),
-    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "/Volumes/cmgg_pnlab/Kasper/Data/Interesting_Lists/TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 2023.xlsx"), sheet_name='S3 DiffExpression testing'),
+    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 202z3.xlsx"), sheet_name='S3 DiffExpression testing'),
     #Igor proteomics on 24h incubation with E7107
     "E7107_24_proteomics"               : pd.read_csv(os.path.join(in_dir,   "DMSOvs24hE7107.csv")),
     # High Risk versus Low Risk
@@ -396,19 +400,23 @@ for df_key in dict_df:
         dict_volcano = {'ni_X' : [], 'ni_Y' : [], 'i_X' : [], 'i_Y' : [], 'geneSymbols': []}
         for index, row in df.iterrows():
             if 'perseus' in df_key:
-                gene = str(row['Genes']).capitalize()
+                gene = str(row['Genes']).capitalize() 
                 try:
-                    l2FC = row['Difference']
+                    l2FC = row['Difference'] # maxquant
                     neglogpval = row['-Log(P-value)']
                     pval = 10**(-1*neglogpval)
                 except:
-                    pval=row['p-value']
+                    pval=row['neglogpval']
                     l2FC=row['log2FC']
                 
             elif 'TALL_proteomics' in df_key:
                 gene = str(row['Gene names']).capitalize()
                 l2FC = row['log2FC']
                 pval = row['adj P Val_T ALLvsThymus_']
+            elif 'Blood_2024' in df_key:
+                gene = row['Genes']
+                l2FC = row['log2FC']
+                pval = row['p-value']
             else:
                 gene = str(row['GeneSymbol']).capitalize()
                 l2FC = row['log2FC']
