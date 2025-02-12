@@ -47,8 +47,9 @@ path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file p
 #            genes_of_interest = KTC_GetGeneSet('MYC')
 # The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
 
-genes_of_interest = ['IMPA2', 'TRIM60']
+genes_of_interest = ['CD1A', 'CD3', 'TAL1']
 genes_of_interest = KTC_GetGeneSet('PRC2')
+
 
 # =============================================================================
 # Thresholds of significance and magnitude for noteworthy events
@@ -107,6 +108,8 @@ dict_pdf_layout = {
     'Blood 2024' : ['CD19B_v_BALL_rMATS', 'RPB1_v_IgG_IP_proteomics_perseus'],
     # Science Advances, Lisa, 2024
     'Science Advances, Lisa, 2024' : ['72h_post_PSIP1_KD_JURKAT_deseq', 'Lisa_PTEN_deseq', 'Lisa_LMO2_deseq'],
+    #Tsirigos TALL v ETP, from 39719705
+    'Tsirigos TALL v ETP' : ['TALL_v_ETP_RNA_seq_deseq'],
     # STM2457
     'STM2457' : ['STM2457_TMT2_results_STM_R_DMSO_L.txt', 'STM2457_TMT3_results_STM_R_DMSO_L.txt'],
     # NMD-related (from some Table 5 somewhere)
@@ -178,14 +181,18 @@ dict_df = {
     #SciAdv 2024, Demoen
     '72h_post_PSIP1_KD_JURKAT_deseq'    : pd.read_csv(os.path.join(in_dir,   'ST6_significant_DGE_Jurkat_PSIP1_KD.csv')),
     'Lisa_PTEN_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST2_significant_DGE_Pten.csv')),
-    'Lisa_LMO2_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST3_significant_DGE_Lmo2.csv'))
+    'Lisa_LMO2_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST3_significant_DGE_Lmo2.csv')),
+    #Tsirigos ETP v TALL
+    'TALL_v_ETP_RNA_seq_deseq'          : pd.read_csv(os.path.join(in_dir,    'TALL_v_ETP_GSE243914.csv'))
     }
 
-df_E7107_NW_MS                          = pd.read_excel(os.path.join(in_dir, "PN 031821_tc-786_Marinaccio_C_humanTMT16_Northwestern.xlsx"), sheet_name="tc-786_proteinquant", skiprows=4, header=1)
-df_E7107_rescue                         = pd.read_excel(os.path.join(in_dir, "NMD-related-Table 5. E7107 and NMDi-associated gene exprression changes (CUTLL1, 24h).xlsx"), sheet_name="E7107_vs_E7107-NMDi.htseq.edgeR", skiprows=1)
+df_E7107_NW_MS                          = pd.read_excel(os.path.join(in_dir,  "PN 031821_tc-786_Marinaccio_C_humanTMT16_Northwestern.xlsx"), sheet_name="tc-786_proteinquant", skiprows=4, header=1)
+df_E7107_rescue                         = pd.read_excel(os.path.join(in_dir,  "NMD-related-Table 5. E7107 and NMDi-associated gene exprression changes (CUTLL1, 24h).xlsx"), sheet_name="E7107_vs_E7107-NMDi.htseq.edgeR", skiprows=1)
 
 
-#%% ANALYSIS - Run this cell to execute script
+#%% =============================================================================
+# ANALYSIS - Run this cell to execute script
+# =============================================================================
 plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
 # =============================================================================
