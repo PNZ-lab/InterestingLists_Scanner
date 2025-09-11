@@ -23,32 +23,8 @@ from matplotlib.ticker import MaxNLocator
 # =============================================================================
 
 in_dir       = '/Volumes/cmgg_pnlab/Kasper/Data/Interesting_Lists' # Directory where all "Interesting lists" are located
-in_dir       = '/Users/kasperthorhaugechristensen/Desktop/Interesting_Lists'
-out_dir      = r'/Users/kasperthorhaugechristensen/Desktop/Dumpbox2/' #Directory where plots are saved
+out_dir      = r'/Users/kachrist/Desktop/out_dir' #Directory where plots are saved
 path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file produced. Output directory is 
-
-# =============================================================================
-# Defining a list of genes
-# =============================================================================
-# genes_of_interest is a list of gene names as strings that will be searched for in the databases
-# You can either:
-#    1) Define a list of genes yourself, e.g:
-#         genes_of_interest = ['MYC', 'TAL1', 'RBM39']
-#    2) Use KTC_GetGeneSet to find a set of genes. It will try - in order - to:
-#        a) Check if the input is a list. If so, it will interpret it as a set of genes. e.g:
-#            genes_of_interest = KTC_GetGeneSet(['MYC', 'TAL1', 'RBM39'])
-#        b) Locate a predefined set of genes by a name in the dictionary gene_sets in KTC_functions.py, e.g:
-#            genes_of_interest = KTC_GetGeneSet('Laura')
-#        c) Search Msigdb for a set of genes with that name. Default database is human (2024.1.Hs)), e.g:
-#            i)   genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1') # Find names here: https://www.gsea-msigdb.org/gsea/msigdb/index.jsp
-#            ii)  genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Hs') # Funtionally identical to the above
-#            iii) genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Mm') # Searching the mouse equivalent
-#        d) If all of the above fail, it defaults to interpret the string inout as a single gene, e.g:
-#            genes_of_interest = KTC_GetGeneSet('MYC')
-# The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
-
-genes_of_interest = ['CD1A', 'CD3', 'TAL1']
-genes_of_interest = KTC_GetGeneSet('PRC2')
 
 
 # =============================================================================
@@ -82,12 +58,19 @@ AS_colors   = {
 	'A5SS'  : '#0380fc'  #Blue
 		}
 
+x_window = 1 # Clamps the x-axis of differential splicing (all values are between -1 and 1)
+min_pval = 0.00000000000000000001 # Used as a ceiling to limit the scale of the 2nd axis with miniscule p-values
+
 # =============================================================================
 # Defining the structure of the PDF file
 # =============================================================================
 # Here, each key will be a page in a pdf with the values being a list of plots for that page (using the names for plots defined in of dict_df).
 # A first page with info on launch parameters is automatically generated and the last two are populated dynamically
 dict_pdf_layout = {
+    # T-ALL vs thymus
+    'T-ALL vs thymus - Differential Expression, Proteomics, and Splicing' : ['TALL_deseq', 'TALL_proteomics', 'TALL_rMATS'],
+    #High risk vs Low risk
+    'High risk patients vs low risk patients - Differential Expression and Splicing' : ['risk_edgeR', 'risk_rMATS_kasper'],
     # PRC2
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Expression' : ['PRC2_edgeR_E7107', 'PRC2_edgeR_Indisulam', 'PRC2_edgeR_Tazemetostat', 'PRC2_edgeR_KO1', 'PRC2_edgeR_KO2'],
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Splicing' : ['E7107_rMATS', 'E7070_rMATS', 'Tazemetostat_rMATS', 'KO1_rMATS', 'KO2_rMATS'],
@@ -95,12 +78,8 @@ dict_pdf_layout = {
     'EZH2 Inhibitor GSK126' : ['GSK126_v_DMSO_proteomics_perseus'],
     #Igor E7107 proteomics
     'DMSO vs 24h E7107 - Igor proteomics' : ['E7107_24_proteomics'],
-    #High risk vs Low risk
-    'High risk patients vs low risk patients - Differential Expression and Splicing' : ['risk_edgeR', 'risk_rMATS_kasper'],
     # Jonas T-ALL&STM 3seq, m6a, expression, splicing
     'T-ALL vs STM1 - Differential Expression and Splicing' : ['TallSTM_path_deseq', 'TallSTM_path_rMATS'],
-    # T-ALL vs thymus
-    'T-ALL vs thymus - Differential Expression, Proteomics, and Splicing' : ['TALL_deseq', 'TALL_proteomics', 'TALL_rMATS'],
     # Science Advances paper
     'Han, 2022, Science Advances - E7107, Differential Expression and Splicing' : ['SciAdv_TS4_E7107_edgeR_15min', 'SciAdv_TS4_E7107_edgeR_1.5nm', 'SciAdv_TS4_E7107_edgeR_3.0nm', 'E7107_TS2_24_splicing_rMATS'],
     'Han, 2022, Science Advances - shSF3B1, Differential Expression and Splicing' : ['SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS3_shSF3B1_rMATS_1', 'SciAdv_TS3_shSF3B1_rMATS_2'],
@@ -112,6 +91,8 @@ dict_pdf_layout = {
     'Tsirigos TALL v ETP' : ['TALL_v_ETP_RNA_seq_deseq'],
     # STM2457
     'STM2457' : ['STM2457_TMT2_results_STM_R_DMSO_L.txt', 'STM2457_TMT3_results_STM_R_DMSO_L.txt'],
+    #Laura FK866 and NAMPT KD
+    'Laura FK866, differential expression' : ['FK866_2.5_24h_deseq', 'FK866_2.5_48h_deseq', 'FK866_5.0_24h_deseq', 'FK866_5.0_48h_deseq', 'NAMPT_KD_deseq'],
     # NMD-related (from some Table 5 somewhere)
     'E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)' : [],
     # Proteomics from Northwestern
@@ -128,6 +109,18 @@ dict_df = {
     # 'PRC2_ATAC_Taz'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_Taz_v_ctrl.tsv"), sep='\t'),
     # 'PRC2_ATAC_KO1'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO1_v_ctrl.tsv"), sep='\t'),
     # 'PRC2_ATAC_KO2'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO2_v_ctrl.tsv"), sep='\t'),
+    #T-ALL vs. Thymus
+    'TALL_rMATS'                        : pd.read_csv(os.path.join(in_dir,   "thymus_v_TALL_rMATS_compiled.tsv"), sep='\t'),
+    'TALL_deseq'                        : pd.read_excel(os.path.join(in_dir, "TALL1. Expression DE-SEQ T_All vs Thymus_BE-March, 2023.xlsx"), sheet_name='Blad1'),
+    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 2023.xlsx"), sheet_name='S3 DiffExpression testing'),
+    #Laura FK866 and NAMPT KD
+    'FK866_2.5_24h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK25_24h_results.tsv'), sep='\t'),
+    'FK866_2.5_48h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK25_48h_results.tsv'), sep='\t'),
+    'FK866_5.0_24h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK5_24h_results.tsv'), sep='\t'),
+    'FK866_5.0_48h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK5_48h_results.tsv'), sep='\t'),
+    'NAMPT_KD_deseq'                    : pd.read_csv(os.path.join(in_dir, 'RNAseq_NAMPT_KD.csv')),
+    # 'FK866_proteomics_perseus'          : pd.read_csv(os.path.join(in_dir, '20240827_Proteomics_FK866_norm-perseus-for-volcano.csv')
+    
     #STM2457
     'STM2457_TMT2_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT2_results_STM_R_DMSO_L.txt'), sep='\t'),
     'STM2457_TMT3_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT3_results_STM_R_DMSO_L.txt'), sep='\t'),
@@ -154,10 +147,7 @@ dict_df = {
     # Jonas T-ALL&STM 3seq, m6a, expression, splicing
     "TallSTM_path_rMATS"                : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='eclip_expression_splicing_data'),
     "TallSTM_path_deseq"                : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='m6a_with_expression_dataset'),
-    #T-ALL vs. Thymus
-    'TALL_rMATS'                        : pd.read_csv(os.path.join(in_dir,   "thymus_v_TALL_rMATS_compiled.tsv"), sep='\t'),
-    'TALL_deseq'                        : pd.read_excel(os.path.join(in_dir, "TALL1. Expression DE-SEQ T_All vs Thymus_BE-March, 2023.xlsx"), sheet_name='Blad1'),
-    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 2023.xlsx"), sheet_name='S3 DiffExpression testing'),
+
     #Igor proteomics on 24h incubation with E7107
     "E7107_24_proteomics"               : pd.read_csv(os.path.join(in_dir,   "DMSOvs24hE7107.csv")),
     # High Risk versus Low Risk
@@ -190,16 +180,42 @@ df_E7107_NW_MS                          = pd.read_excel(os.path.join(in_dir,  "P
 df_E7107_rescue                         = pd.read_excel(os.path.join(in_dir,  "NMD-related-Table 5. E7107 and NMDi-associated gene exprression changes (CUTLL1, 24h).xlsx"), sheet_name="E7107_vs_E7107-NMDi.htseq.edgeR", skiprows=1)
 
 
-#%% =============================================================================
+#%% ===========================================================================
 # ANALYSIS - Run this cell to execute script
 # =============================================================================
+# =============================================================================
+# Defining a list of genes
+# =============================================================================
+# genes_of_interest is a list of gene names as strings that will be searched for in the databases
+# You can either:
+#    1) Define a list of genes yourself, e.g:
+#         genes_of_interest = ['MYC', 'TAL1', 'RBM39']
+#    2) Use KTC_GetGeneSet to find a set of genes. It will try - in order - to:
+#        a) Check if the input is a list. If so, it will interpret it as a set of genes. e.g:
+#            genes_of_interest = KTC_GetGeneSet(['MYC', 'TAL1', 'RBM39'])
+#        b) Locate a predefined set of genes by a name in the dictionary gene_sets in KTC_functions.py, e.g:
+#            genes_of_interest = KTC_GetGeneSet('Laura')
+#        c) Search Msigdb for a set of genes with that name. Default database is human (2024.1.Hs)), e.g:
+#            i)   genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1') # Find names here: https://www.gsea-msigdb.org/gsea/msigdb/index.jsp
+#            ii)  genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Hs') # Funtionally identical to the above
+#            iii) genes_of_interest = KTC_GetGeneSet('HALLMARK_MYC_TARGETS_V1', db_version='2024.1.Mm') # Searching the mouse equivalent
+#        d) If all of the above fail, it defaults to interpret the string inout as a single gene, e.g:
+#            genes_of_interest = KTC_GetGeneSet('MYC')
+# The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
+
+# . o O - - - CHANGE LIST OF GENES HERE - - - O o .
+genes_of_interest = ['ASNS', 'MYC', 'IKZF1', 'TAL1', 'TP53', 'NOTCH1', 'CDKN2A', 'CDKN2B', 'MTOR', 'DHFR', 'NRK1', 'NRK2', 'NMNAT', 'URH1', 'PNP1', 'NMRK1', 'NMRK2', 'NAPRT', 'NADS', 'ATF4']
+
+genes_of_interest = ['MMS22L', 'TONSL']
+
+# genes_of_interest = KTC_GetGeneSet('GOBP_INTEGRATED_STRESS_RESPONSE_SIGNALING')
+
+
 plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
 # =============================================================================
 # Volcano Plot function
 # =============================================================================
-x_window = 1 # Clamps the x-axis of differential splicing (all values are between -1 and 1)
-min_pval = 0.00000000000000000001 # Used as a ceiling to limit the scale of the 2nd axis with miniscule p-values
 
 def pval_Clamper(_float):
 	if _float < min_pval:
@@ -220,7 +236,7 @@ def Volcano(dict_volcano, name, analType):
     plt.scatter(ni_Xs, ni_Ys, color=c_nint, s=200)
 
     max_value = max(max(i_Ys), max(ni_Ys)) if i_Ys else max(ni_Ys)
-    plt.ylim(0, max_value * 1.05)
+    plt.ylim(0, max_value * 1.5)
 
     # Generate a vertical line for the mean of X-values (considering only statistically significant data)
     if plot_mean_value:
@@ -238,7 +254,9 @@ def Volcano(dict_volcano, name, analType):
         for _, x, y, label in labeled_points:
             if plot_text:
                 texts.append(plt.text(x, y, label, fontsize=6 * scale_factor))
-        adjust_text(texts)# Adjust text positions to avoid overlap (optional if adjust_text is used)
+                
+        adjust_text(texts,
+                    arrowprops=dict(arrowstyle='->'), color='black')# Adjust text positions to avoid overlap (optional if adjust_text is used)
 
     #If this is differential expression
     if analType == "DE_expression":
@@ -285,7 +303,8 @@ def Volcano(dict_volcano, name, analType):
     ax = plt.gca()
     ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
     ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
-    path_file_out = out_dir + name + '.png'
+    path_file_out = os.path.join(out_dir, name + '.svg')
+    # path_file_out = out_dir + name + '.png'
     plot_path_list.append(path_file_out)
     plt.savefig(path_file_out)
     plt.show()
@@ -326,8 +345,8 @@ for df_key in dict_df:
     if 'rMATS' in df_key:
         genes_of_interest_mod = [s.upper() for s in genes_of_interest]
         alreadyAdded = []
-        if print_gene_names:
-            print('Gene,Event,FDR,PSIdiff')
+        # if print_gene_names:
+        #     print('Gene,Event,FDR,PSIdiff')
         dict_volcano = {'ni_X' : [], 'ni_Y' : [], 'i_X' : [], 'i_Y' : [], 'geneSymbols': []}
         AS_list	     = []
         for index, row in df.iterrows():
@@ -343,8 +362,8 @@ for df_key in dict_df:
             if 'nan' in line:
                 continue
             if gene.upper() in genes_of_interest_mod and FDR < thresh_FDR and abs(PSI) >= thresh_PSI:
-                if print_gene_names:
-                    print(line)
+                # if print_gene_names:
+                #     print(line)
                 dict_volcano['i_X'].append(PSI)
                 dict_volcano['i_Y'].append(-math.log10(pval_Clamper(FDR)))
                 dict_volcano['geneSymbols'].append(gene)
@@ -369,8 +388,8 @@ for df_key in dict_df:
     elif 'edgeR' in df_key or 'deseq' in df_key or 'ATAC' in df_key:
         genes_of_interest_mod = [s.upper() for s in genes_of_interest]
         alreadyAdded = []
-        if print_gene_names:
-            print('Gene,pVal,log2FC')
+        # if print_gene_names:
+        #     print('Gene,pVal,log2FC')
         dict_volcano = {'ni_X' : [], 'ni_Y' : [], 'i_X' : [], 'i_Y' : [], 'geneSymbols': []}
         for index, row in df.iterrows():
             if 'edgeR' in df_key:
@@ -382,8 +401,8 @@ for df_key in dict_df:
             pval = row['padj']
             line = '%s,%.3f,%.3f' %(gene, pval, l2FC)
             if gene.upper() in genes_of_interest_mod and pval < thresh_pval and abs(l2FC) >= thresh_l2FC:
-                if print_gene_names:
-                    print(line)
+                # if print_gene_names:
+                #     print(line)
                 dict_volcano['i_X'].append(l2FC)
                 dict_volcano['i_Y'].append(-math.log10(pval_Clamper(pval)))
                 dict_volcano['geneSymbols'].append(gene)
@@ -407,8 +426,8 @@ for df_key in dict_df:
     elif 'proteomics' in df_key:
         genes_of_interest_mod = [s.capitalize() for s in genes_of_interest]
         alreadyAdded = []
-        if print_gene_names:
-            print('Gene,pVal,log2FC')
+        # if print_gene_names:
+        #     print('Gene,pVal,log2FC')
         dict_volcano = {'ni_X' : [], 'ni_Y' : [], 'i_X' : [], 'i_Y' : [], 'geneSymbols': []}
         for index, row in df.iterrows():
             if 'perseus' in df_key:
@@ -435,8 +454,8 @@ for df_key in dict_df:
                 pval = 10**(-1*neglogpval)
             line = '%s,%.3f,%.3f' %(gene, pval, l2FC)
             if str(gene).capitalize() in genes_of_interest_mod and pval < thresh_pval and abs(l2FC) >= thresh_l2FC:
-                if print_gene_names:
-                    print(line)
+                # if print_gene_names:
+                #     print(line)
                 dict_volcano['i_X'].append(l2FC)
                 dict_volcano['i_Y'].append(-math.log10(pval_Clamper(pval)))
                 dict_volcano['geneSymbols'].append(gene)
