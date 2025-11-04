@@ -68,18 +68,38 @@ min_pval = 0.00000000000000000001 # Used as a ceiling to limit the scale of the 
 # A first page with info on launch parameters is automatically generated and the last two are populated dynamically
 dict_pdf_layout = {
     # T-ALL vs thymus
-    'T-ALL vs thymus - Differential Expression, Proteomics, and Splicing' : ['TALL_deseq', 'TALL_proteomics', 'TALL_rMATS'],
+    'T-ALL vs thymus - Differential Expression, Proteomics, and Splicing' : ['TALL_shortRead_deseq', 'TALL_ONT_deseq', 'TALL_proteomics', 'TALL_rMATS'],
+    # T-ALL vs controls (public)
+    'T-ALL vs controls (public data)' : ['TALL_v_T-cell_Cramer_2013_deseq', 'TALL_v_healthy_MILE_2009_deseq', 'TALL_v_Thymus_Fernandes_2018_deseq'],
     #High risk vs Low risk
     'High risk patients vs low risk patients - Differential Expression and Splicing' : ['risk_edgeR', 'risk_rMATS_kasper'],
     # PRC2
-    'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Expression' : ['PRC2_edgeR_E7107', 'PRC2_edgeR_Indisulam', 'PRC2_edgeR_Tazemetostat', 'PRC2_edgeR_KO1', 'PRC2_edgeR_KO2'],
+    'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Expression' : ['PRC2_edgeR_E7107', 'PRC2_edgeR_Indisulam', 'PRC2_edgeR_Tazemetostat', 'PRC2_edgeR_KO1', 'PRC2_edgeR_KO2', 'EZH2ko_Mansour_2020_deseq'],
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Splicing' : ['E7107_rMATS', 'E7070_rMATS', 'Tazemetostat_rMATS', 'KO1_rMATS', 'KO2_rMATS'],
     'Inhibitors of splicing and EZH2 and EZH2 KOs - Differential Proteomics' : ['E7107_v_DMSO_proteomics_perseus', 'E7070_v_DMSO_proteomics_perseus', 'Taz_v_DMSO_proteomics_perseus', 'KO1_v_DMSO_proteomics_perseus', 'KO2_v_DMSO_proteomics_perseus'],
     'EZH2 Inhibitor GSK126' : ['GSK126_v_DMSO_proteomics_perseus'],
+    'ATAC in EZH2 KO' : ['PRC2_ATAC_KO1', 'PRC2_ATAC_KO2', 'PRC2_ATAC_KO'],
+    # Various KDs
+    'Various KDs' : ['shPSMG1_edgeR', 'HNRNPC_KD_v_MHCC97_deseq'],
+    #Jonas HNRNPC KD
+    'Jonas HNRNPC KD' : ['HNRNPC_KD_v_3d_deseq', 'HNRNPC_KD_v_7d_deseq'],
     #Igor E7107 proteomics
     'DMSO vs 24h E7107 - Igor proteomics' : ['E7107_24_proteomics'],
     # Jonas T-ALL&STM 3seq, m6a, expression, splicing
     'T-ALL vs STM1 - Differential Expression and Splicing' : ['TallSTM_path_deseq', 'TallSTM_path_rMATS'],
+    # CNS in TALL v BM in TALL
+    'CNS in T-ALL vs BM in ALL' : ['CNS_v_BM_Muench_2017_deseq', 'CNS_v_BM_BALL_Velden_2015_deseq'],
+    # Fang 2020
+    'Fang 2020 Genome Biology' : ['shCTCF_v_control_GSE130140'],
+    # Freya proteomics
+    'Freya 2025 Differential Expression' : ['deseq_sh65_vs_NTC_FCS_72', 'deseq_DLD_vs_FCS_NTC_48', 'deseq_DLD_vs_FCS_NTC_72', 'deseq_h72_vs_h48_NTC_DLD', 'deseq_h72_vs_h48_NTC_FCS',
+     'deseq_KDavg_DLDvsFCS_effect_48', 'deseq_KDavg_DLDvsFCS_effect_72', 'deseq_KDavg_DLDvsFCS_effect_alltimes', 'deseq_KDavg_vs_NTC', 'deseq_sh08_DLDvsFCS_effect_48',
+     'deseq_sh08_DLDvsFCS_effect_72', 'deseq_sh08_vs_NTC_DLD_48', 'deseq_sh08_vs_NTC_DLD_72', 'deseq_sh08_vs_NTC_FCS_48', 'deseq_sh08_vs_NTC_FCS_72', 'deseq_sh65_DLDvsFCS_effect_48',
+     'deseq_sh65_DLDvsFCS_effect_72', 'deseq_sh65_vs_NTC_DLD_48', 'deseq_sh65_vs_NTC_DLD_72', 'deseq_sh65_vs_NTC_FCS_48'],
+    # Cancer Discovery 2020 Zhou, shSRSF6 v JURKAT
+    'Cancer Discovery 2020, Zhou, shSRSF6' : ['CancDisc_shSRSF6_v_JURKAT_edgeR'],
+    # Freya CNS v BM
+    'Freya CNS v BM' : ['Freya_CNSvsBM_RNAseq_deseq', 'CNS_v_BM_Freya_rMATS'],
     # Science Advances paper
     'Han, 2022, Science Advances - E7107, Differential Expression and Splicing' : ['SciAdv_TS4_E7107_edgeR_15min', 'SciAdv_TS4_E7107_edgeR_1.5nm', 'SciAdv_TS4_E7107_edgeR_3.0nm', 'E7107_TS2_24_splicing_rMATS'],
     'Han, 2022, Science Advances - shSF3B1, Differential Expression and Splicing' : ['SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS5_shSF3B1_edgeR_1', 'SciAdv_TS3_shSF3B1_rMATS_1', 'SciAdv_TS3_shSF3B1_rMATS_2'],
@@ -87,12 +107,22 @@ dict_pdf_layout = {
     'Blood 2024' : ['CD19B_v_BALL_rMATS', 'RPB1_v_IgG_IP_proteomics_perseus'],
     # Science Advances, Lisa, 2024
     'Science Advances, Lisa, 2024' : ['72h_post_PSIP1_KD_JURKAT_deseq', 'Lisa_PTEN_deseq', 'Lisa_LMO2_deseq'],
-    #Tsirigos TALL v ETP, from 39719705
-    'Tsirigos TALL v ETP' : ['TALL_v_ETP_RNA_seq_deseq'],
+    #TALL v ETP
+    'TALL v ETP' : ['TALL_v_ETP_Rodriguez_deseq', 'TALL_v_ETP_Kloetgen_deseq' ,'T_ALL_v_ETP_Zhang_2011_deseq'],
     # STM2457
     'STM2457' : ['STM2457_TMT2_results_STM_R_DMSO_L.txt', 'STM2457_TMT3_results_STM_R_DMSO_L.txt'],
     #Laura FK866 and NAMPT KD
     'Laura FK866, differential expression' : ['FK866_2.5_24h_deseq', 'FK866_2.5_48h_deseq', 'FK866_5.0_24h_deseq', 'FK866_5.0_48h_deseq', 'NAMPT_KD_deseq'],
+    #Tim SOX
+    'Tim SOX project' : ['Tim_SOX_deseq'],
+    # Fang 2020
+    'Fang 2020 CTCF and gamma-SI' : ['shCTCF_v_control_deseq', 'JURKAT_v_Tcell_deseq', 'GSI3d_v_JURKAT_deseq', 'GSI3d_w6h_v_CUTTL1_deseq', 'GSI3d_v_CUTTL1_deseq', 'GSI3d_w4h_v_JURKAT_deseq'],
+    #Marinaccio 2021, Cancer Discovery
+    'Marinaccion 2021, Cancer Discovery' : ['MPLW515LSTK11KOvsMPLW515L_deseq', 'MPLW515LSTK11KOvsWT_deseq', 'MPLW515LvsWT_deseq'],
+    # Jin 2022, Science Advances, Chromatin accessibility in T-ALL cells upon USP7 inhibitor with or without dexamethasone
+    'Jin 2022, Science Advances, Chromatin, USP7 and Dexamethasone' : ['Dasatinib_v_CUTTL1_deseq', 'shUSP11_v_CUTTL1_deseq', 'shUSP11Dex_v_Dex_CUTTL1_deseq', 'Dex48hr_v_DND41_deseq', 'Dex72hr_v_DND41_deseq', 'DexUSP7i_v_USP7i_72h_DND41_deseq', 'DexUSP7i_v_USP7i_48h_DND41_deseq'],
+    #Kevin RNA-seq
+    'Kevin RNA-seq' : ['Kevin_CTX712_6_vs_DMSO_6_deseq', 'Kevin_CTX712_24_vs_DMSO_24_deseq', 'Kevin_E7107_6_vs_DMSO_6_deseq', 'Kevin_E7107_24_vs_DMSO_24_deseq', 'Kevin_GNF2133_6_vs_DMSO_6_deseq', 'Kevin_GNF2133_24_vs_DMSO_24_deseq', 'Kevin_THZ531_6_vs_DMSO_6_deseq', 'Kevin_THZ531_24_vs_DMSO_24_deseq'],
     # NMD-related (from some Table 5 somewhere)
     'E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)' : [],
     # Proteomics from Northwestern
@@ -103,30 +133,14 @@ dict_pdf_layout = {
 #This cell takes a few minutes to run. If it has already been run and loaded into memory and no changes to the dataframe has been made - you could skip it.
 print('\n -- Reading in data...')
 dict_df = {
-    #PRC2
+    # PRC2
     # 'PRC2_ATAC_E7070'                   : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7070_v_ctrl.tsv"), sep='\t'),
     # 'PRC2_ATAC_E7107'                   : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_E7107_v_ctrl.tsv"), sep='\t'),
     # 'PRC2_ATAC_Taz'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_Taz_v_ctrl.tsv"), sep='\t'),
-    # 'PRC2_ATAC_KO1'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO1_v_ctrl.tsv"), sep='\t'),
-    # 'PRC2_ATAC_KO2'                     : pd.read_csv(os.path.join(in_dir,   "contrast_ATAC_KO2_v_ctrl.tsv"), sep='\t'),
-    #T-ALL vs. Thymus
-    'TALL_rMATS'                        : pd.read_csv(os.path.join(in_dir,   "thymus_v_TALL_rMATS_compiled.tsv"), sep='\t'),
-    'TALL_deseq'                        : pd.read_excel(os.path.join(in_dir, "TALL1. Expression DE-SEQ T_All vs Thymus_BE-March, 2023.xlsx"), sheet_name='Blad1'),
-    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 2023.xlsx"), sheet_name='S3 DiffExpression testing'),
-    #Laura FK866 and NAMPT KD
-    'FK866_2.5_24h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK25_24h_results.tsv'), sep='\t'),
-    'FK866_2.5_48h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK25_48h_results.tsv'), sep='\t'),
-    'FK866_5.0_24h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK5_24h_results.tsv'), sep='\t'),
-    'FK866_5.0_48h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK5_48h_results.tsv'), sep='\t'),
-    'NAMPT_KD_deseq'                    : pd.read_csv(os.path.join(in_dir, 'RNAseq_NAMPT_KD.csv')),
-    # 'FK866_proteomics_perseus'          : pd.read_csv(os.path.join(in_dir, '20240827_Proteomics_FK866_norm-perseus-for-volcano.csv')
-    
-    #STM2457
-    'STM2457_TMT2_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT2_results_STM_R_DMSO_L.txt'), sep='\t'),
-    'STM2457_TMT3_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT3_results_STM_R_DMSO_L.txt'), sep='\t'),
-    #GSK126 (EZH2 inhibitor) proteomics
-    'GSK126_v_DMSO_proteomics_perseus'  : pd.read_csv(os.path.join(in_dir,   "GSK126_R_vs_DMSO_L.txt"), sep='\t'),
-    # PRC2 rMATS
+    'PRC2_ATAC_KO1'                        : pd.read_csv(os.path.join(in_dir,   "ATAC_KO1_annotation.csv")),
+    'PRC2_ATAC_KO2'                        : pd.read_csv(os.path.join(in_dir,   "ATAC_KO2_annotation.csv")),
+    'PRC2_ATAC_KO'                        : pd.read_csv(os.path.join(in_dir,   "ATAC_KO_annotation.csv")),
+    #PRC2 rMATS
     'E7107_rMATS'                       : pd.read_excel(os.path.join(in_dir, 'PRC2_rMATS_results_PSI0.05_FDR0.1.xlsx'), sheet_name='E7107'),
     'E7070_rMATS'                       : pd.read_excel(os.path.join(in_dir, 'PRC2_rMATS_results_PSI0.05_FDR0.1.xlsx'), sheet_name='Indisulam'),
     'Tazemetostat_rMATS'                : pd.read_excel(os.path.join(in_dir, 'PRC2_rMATS_results_PSI0.05_FDR0.1.xlsx'), sheet_name='Tazemetostat'),
@@ -138,12 +152,31 @@ dict_df = {
     'PRC2_edgeR_Tazemetostat'           : pd.read_csv(os.path.join(in_dir,   'edgeR_results_Tazemetostat.tsv'), sep='\t'),
     'PRC2_edgeR_KO1'                    : pd.read_csv(os.path.join(in_dir,   'edgeR_results_KO1.tsv'), sep='\t'),
     'PRC2_edgeR_KO2'                    : pd.read_csv(os.path.join(in_dir,   'edgeR_results_KO2.tsv'), sep='\t'),
+    'EZH2ko_Mansour_2020_deseq'         : pd.read_csv(os.path.join(in_dir,   'EZH2ko_v_Jurkat_GSE127261.tsv'), sep='\t'),
     #PRC2 proteomics
     'E7070_v_DMSO_proteomics_perseus'   : pd.read_csv(os.path.join(in_dir,   "E7070vsDMSO.txt"), sep='\t'),
     'E7107_v_DMSO_proteomics_perseus'   : pd.read_csv(os.path.join(in_dir,   "E7107vsDMSO.txt"), sep='\t'),
     'Taz_v_DMSO_proteomics_perseus'     : pd.read_csv(os.path.join(in_dir,   "TazvsDMSO.txt"), sep='\t'),
     'KO1_v_DMSO_proteomics_perseus'     : pd.read_csv(os.path.join(in_dir,   "KO1vsDMSO.txt"), sep='\t'),
     'KO2_v_DMSO_proteomics_perseus'     : pd.read_csv(os.path.join(in_dir,   "KO2vsDMSO.txt"), sep='\t'),
+    # T-ALL vs. Thymus
+    'TALL_rMATS'                        : pd.read_csv(os.path.join(in_dir,   "thymus_v_TALL_rMATS_compiled.tsv"), sep='\t'),
+    'TALL_shortRead_deseq'              : pd.read_excel(os.path.join(in_dir, "Table S3. RNA seq Thymus vs TALL_article.xlsx"), sheet_name='Short-read analysis', skiprows=1),
+    'TALL_ONT_deseq'                    : pd.read_excel(os.path.join(in_dir, "Table S3. RNA seq Thymus vs TALL_article.xlsx"), sheet_name='ONT'),
+    'TALL_proteomics'                   : pd.read_excel(os.path.join(in_dir, "TALL-MS_results_shotgun proteomics Thymus vs. T-ALL PRC-6051_DIA June 2023.xlsx"), sheet_name='S3 DiffExpression testing'),
+    #Laura FK866 and NAMPT KD
+    'FK866_2.5_24h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK25_24h_results.tsv'), sep='\t'),
+    'FK866_2.5_48h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK25_48h_results.tsv'), sep='\t'),
+    'FK866_5.0_24h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK5_24h_results.tsv'), sep='\t'),
+    'FK866_5.0_48h_deseq'               : pd.read_csv(os.path.join(in_dir,'FK5_48h_results.tsv'), sep='\t'),
+    'NAMPT_KD_deseq'                    : pd.read_csv(os.path.join(in_dir, 'RNAseq_NAMPT_KD.csv')),
+    # 'FK866_proteomics_perseus'          : pd.read_csv(os.path.join(in_dir, '20240827_Proteomics_FK866_norm-perseus-for-volcano.csv')),
+    # STM2457
+    'STM2457_TMT2_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT2_results_STM_R_DMSO_L.txt'), sep='\t'),
+    'STM2457_TMT3_proteomics'           : pd.read_csv(os.path.join(in_dir,   'STM2457_TMT3_results_STM_R_DMSO_L.txt'), sep='\t'),
+    #GSK126 (EZH2 inhibitor) proteomics
+    'GSK126_v_DMSO_proteomics_perseus'  : pd.read_csv(os.path.join(in_dir,   "GSK126_R_vs_DMSO_L.txt"), sep='\t'),
+
     # Jonas T-ALL&STM 3seq, m6a, expression, splicing
     "TallSTM_path_rMATS"                : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='eclip_expression_splicing_data'),
     "TallSTM_path_deseq"                : pd.read_excel(os.path.join(in_dir, "TALL&STM1.xlsx"), sheet_name='m6a_with_expression_dataset'),
@@ -162,22 +195,136 @@ dict_df = {
     #"SciAdv_TS5_E7107_edgeR"	   : pd.read_excel(SciAdv_TS5_shSF3B1_edgeR, sheet_name='DMSO_vs_3nM_E7107.htseq.edgeR'), #Table S5. E7107 vs vehicle gene expression changes in CUTLL1 cells. Appears to be identical to "SciAdv_TS4_E7107_edgeR_3.0nm"
     "SciAdv_TS5_shSF3B1_edgeR_1"        : pd.read_excel(os.path.join(in_dir, "SciAdv_TS5_shSF3B1_edgeR.xlsx"), sheet_name='shCtrl_vs_shSF3B1.1.htseq.edgeR'), #Table S5. shSF3B1.1-associated gene expression changes in CUTLL1 cells
     "SciAdv_TS5_shSF3B1_edgeR_2"        : pd.read_excel(os.path.join(in_dir, "SciAdv_TS5_shSF3B1_edgeR.xlsx"), sheet_name='shCtrl_vs_shSF3B1.2.htseq.edgeR'), #Table S5. shSF3B1.2-associated gene expression changes in CUTLL1 cells
+    "CancDisc_shSRSF6_v_JURKAT_edgeR"   : pd.read_csv(os.path.join(in_dir,   'shSRSF6_v_JURKAT_Zhou_2020.csv')),
+    
     #Han et al. Splicing alterations caused by SF3B1 silencing is similar to E7107 inhibition
     "SciAdv_TS3_shSF3B1_rMATS_1"        : pd.read_excel(os.path.join(in_dir, "SciAdv_TS3_shSF3B1_rMATS.xlsx"), sheet_name='shSF3B1.1 VS control'), # Table S3. shSF3B1.1-associated splicing events changes in CUTLL1 cells
     "SciAdv_TS3_shSF3B1_rMATS_2"        : pd.read_excel(os.path.join(in_dir, "SciAdv_TS3_shSF3B1_rMATS.xlsx"), sheet_name='shSF3B1.2 VS control'), #Table S3. shSF3B1.2-associated splicing events changes in CUTLL1 cells
     #Blood 2024
     'CD19B_v_BALL_rMATS'                : pd.read_csv(os.path.join(in_dir,   'Blood_2024_CD19B_v_BALL.csv')),
-    'RPB1_v_IgG_IP_proteomics        '  : pd.read_excel(os.path.join(in_dir, 'Blood_2024_RNApolII_IP_proteomics.xlsx'), sheet_name='IgG vs RPB1', skiprows=3),
+    # 'RPB1_v_IgG_IP_proteomics_perseus'  : pd.read_excel(os.path.join(in_dir, 'Blood_2024_RNApolII_IP_proteomics.xlsx'), sheet_name='IgG vs RPB1', skiprows=3),
     #SciAdv 2024, Demoen
     '72h_post_PSIP1_KD_JURKAT_deseq'    : pd.read_csv(os.path.join(in_dir,   'ST6_significant_DGE_Jurkat_PSIP1_KD.csv')),
     'Lisa_PTEN_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST2_significant_DGE_Pten.csv')),
     'Lisa_LMO2_deseq'                   : pd.read_csv(os.path.join(in_dir,   'ST3_significant_DGE_Lmo2.csv')),
-    #Tsirigos ETP v TALL
-    'TALL_v_ETP_RNA_seq_deseq'          : pd.read_csv(os.path.join(in_dir,    'TALL_v_ETP_GSE243914.csv'))
+    # ETP v TALL
+    'TALL_v_ETP_Rodriguez_deseq'         : pd.read_csv(os.path.join(in_dir, 'TALL_v_ETP_GSE243914.csv')),
+    'TALL_v_ETP_Kloetgen_deseq'          : pd.read_csv(os.path.join(in_dir, 'TALL_v_ETP_GSE115895.tsv'), sep='\t'),
+    'T_ALL_v_ETP_Zhang_2011_deseq'       : pd.read_csv(os.path.join(in_dir, 'TALL_v_ETP_GSE28703.tsv'), sep='\t'),
+    #TALL v others (public)
+    'TALL_v_T-cell_Cramer_2013_deseq'    : pd.read_csv(os.path.join(in_dir, 'TALL_v_Tcell_GSE48558.tsv'), sep='\t'),
+    'TALL_v_healthy_MILE_2009_deseq'     : pd.read_csv(os.path.join(in_dir, 'TALL_v_healthy_GSE13159.tsv'), sep='\t'),
+    'TALL_v_Thymus_Fernandes_2018_deseq' : pd.read_csv(os.path.join(in_dir, 'TALL_v_thymus_GSE109231.tsv'), sep='\t'),
+
+    #HNRNPC KD in HCC
+    'HNRNPC_KD_v_MHCC97_deseq'           : pd.read_csv(os.path.join(in_dir, 'MHCC97_v_HNRNPC_KD_GSE180789.tsv'), sep='\t'),
+    # shPSMG1
+    'shPSMG1_edgeR'                      : pd.read_csv(os.path.join(in_dir, 'shCtrl_vs_shPSMG1.htseq.edgeR.txt'), sep='\t'),
+    #CNS vs BM
+    'CNS_v_BM_Muench_2017_deseq'         : pd.read_csv(os.path.join(in_dir, 'CNS_v_BM_GSE89710.tsv'), sep='\t'),
+    'CNS_v_BM_BALL_Velden_2015_deseq'    : pd.read_csv(os.path.join(in_dir, 'CNS_v_BM_BALL_GSE60926.tsv'), sep='\t'),
+    
+    'CNS_v_BM_Freya_rMATS'               : pd.read_csv(os.path.join(in_dir, '1_BM_2_CNS_rMATS_compiled.tsv'), sep='\t'),
+    'Freya_CNSvsBM_RNAseq_deseq'         : pd.read_csv(os.path.join(in_dir, 'Freya_CNSvsBM_RNAseq.csv')),
+    # - proteomics
+    
+    # # Freya proteomics
+    'Freya_proteomics_sh65_vs_NTC_FCS_72'         : pd.read_csv(os.path.join(in_dir, 'DE_sh65_vs_NTC_FCS_72.tsv'), sep='\t'),
+    'Freya_proteomics_DLD_vs_FCS_NTC_48'          : pd.read_csv(os.path.join(in_dir, 'DE_DLD_vs_FCS_NTC_48.tsv'), sep='\t'),
+    'Freya_proteomics_DLD_vs_FCS_NTC_72'          : pd.read_csv(os.path.join(in_dir, 'DE_DLD_vs_FCS_NTC_72.tsv'), sep='\t'),
+    'Freya_proteomics_h72_vs_h48_NTC_DLD'         : pd.read_csv(os.path.join(in_dir, 'DE_h72_vs_h48_NTC_DLD.tsv'), sep='\t'),
+    'Freya_proteomics_h72_vs_h48_NTC_FCS'         : pd.read_csv(os.path.join(in_dir, 'DE_h72_vs_h48_NTC_FCS.tsv'), sep='\t'),
+    'Freya_proteomics_KDavg_DLDvsFCS_effect_48'   : pd.read_csv(os.path.join(in_dir, 'DE_KDavg_DLDvsFCS_effect_48.tsv'), sep='\t'),
+    'Freya_proteomics_KDavg_DLDvsFCS_effect_72'   : pd.read_csv(os.path.join(in_dir, 'DE_KDavg_DLDvsFCS_effect_72.tsv'), sep='\t'),
+    'Freya_proteomics_KDavg_DLDvsFCS_effect_alltimes'         : pd.read_csv(os.path.join(in_dir, 'DE_KDavg_DLDvsFCS_effect_alltimes.tsv'), sep='\t'),
+    'Freya_proteomics_KDavg_vs_NTC'               : pd.read_csv(os.path.join(in_dir, 'DE_KDavg_vs_NTC.tsv'), sep='\t'),
+    'Freya_proteomics_sh08_DLDvsFCS_effect_48'    : pd.read_csv(os.path.join(in_dir, 'DE_sh08_DLDvsFCS_effect_48.tsv'), sep='\t'),
+    'Freya_proteomics_sh08_DLDvsFCS_effect_72'    : pd.read_csv(os.path.join(in_dir, 'DE_sh08_DLDvsFCS_effect_72.tsv'), sep='\t'),
+    'Freya_proteomics_sh08_vs_NTC_DLD_48'         : pd.read_csv(os.path.join(in_dir, 'DE_sh08_vs_NTC_DLD_48.tsv'), sep='\t'),
+    'Freya_proteomics_sh08_vs_NTC_DLD_72'         : pd.read_csv(os.path.join(in_dir, 'DE_sh08_vs_NTC_DLD_72.tsv'), sep='\t'),
+    'Freya_proteomics_sh08_vs_NTC_FCS_48'         : pd.read_csv(os.path.join(in_dir, 'DE_sh08_vs_NTC_FCS_48.tsv'), sep='\t'),
+    'Freya_proteomics_sh08_vs_NTC_FCS_72'         : pd.read_csv(os.path.join(in_dir, 'DE_sh08_vs_NTC_FCS_72.tsv'), sep='\t'),
+    'Freya_proteomics_sh65_DLDvsFCS_effect_48'    : pd.read_csv(os.path.join(in_dir, 'DE_sh65_DLDvsFCS_effect_48.tsv'), sep='\t'),
+    'Freya_proteomics_sh65_DLDvsFCS_effect_72'    : pd.read_csv(os.path.join(in_dir, 'DE_sh65_DLDvsFCS_effect_72.tsv'), sep='\t'),
+    'Freya_proteomics_sh65_vs_NTC_DLD_48'         : pd.read_csv(os.path.join(in_dir, 'DE_sh65_vs_NTC_DLD_48.tsv'), sep='\t'),
+    'Freya_proteomics_sh65_vs_NTC_DLD_72'         : pd.read_csv(os.path.join(in_dir, 'DE_sh65_vs_NTC_DLD_72.tsv'), sep='\t'),
+    'Freya_proteomics_sh65_vs_NTC_FCS_48'         : pd.read_csv(os.path.join(in_dir, 'DE_sh65_vs_NTC_FCS_48.tsv'), sep='\t'),
+    # Tim SOX
+    'Tim_SOX_deseq'                               : pd.read_excel(os.path.join(in_dir, 'Tim_SOX_deseq.xlsx'), sheet_name='Raw_data'),
+    # HNRNPC KD (ours)
+    # 'HNRNPC_KD_v_3d_deseq'                        : pd.read_excel(os.path.join(in_dir, 'HNRNPC_KDvsCTR_3d.xlsx'),sheet_name='No_NA_KTC'),
+    # 'HNRNPC_KD_v_7d_deseq'                        : pd.read_excel(os.path.join(in_dir, 'HNRNPC_KDvsCTR_7d.xlsx'),sheet_name='No_NA_KTC'),
+    
+    'shCTCF_v_control_GSE130140_deseq'            : pd.read_csv(os.path.join(in_dir, 'shCTCF_v_control_GSE130140.tsv'), sep='\t'),
+    #Fang
+    'shCTCF_v_control_deseq'         : pd.read_csv(os.path.join(in_dir, 'shCTCF_v_control_GSE130140.tsv'), sep='\t'),
+    'JURKAT_v_Tcell_deseq'           : pd.read_csv(os.path.join(in_dir, 'JURKAT_v_Tcell_GSE130140.tsv'), sep='\t'),
+    'GSI3d_v_JURKAT_deseq'           : pd.read_csv(os.path.join(in_dir, 'GSI3d_v_JURKAT_GSE130140.tsv'), sep='\t'),
+    'GSI3d_w6h_v_CUTTL1_deseq'       : pd.read_csv(os.path.join(in_dir, 'GSI3d_w6h_v_CUTTL1_GSE130140.tsv'), sep='\t'),
+    'GSI3d_v_CUTTL1_deseq'           : pd.read_csv(os.path.join(in_dir, 'GSI3d_v_CUTTL1_GSE130140.tsv'), sep='\t'),
+    'GSI3d_w4h_v_JURKAT_deseq'       : pd.read_csv(os.path.join(in_dir, 'GSI3d_w4h_v_JURKAT_GSE130140.tsv'), sep='\t'),
+    #Marinaccio 2021
+    'MPLW515LSTK11KOvsMPLW515L_deseq'       : pd.read_excel(os.path.join(in_dir, 'Marinaccio_CancDisc_2021.xlsx'), sheet_name='MPLW515LSTK11KOvsMPLW515L_DEG'),
+    'MPLW515LSTK11KOvsWT_deseq'             : pd.read_excel(os.path.join(in_dir, 'Marinaccio_CancDisc_2021.xlsx'), sheet_name='MPLW515LSTK11KOvsWT_DEG'),
+    'MPLW515LvsWT_deseq'                    : pd.read_excel(os.path.join(in_dir, 'Marinaccio_CancDisc_2021.xlsx'), sheet_name='MPLW515LvsWT_DEG'),
+    # Jin 2022, Science Advances, Chromatin accessibility in T-ALL cells upon USP7 inhibitor with or without dexamethasone
+    'Dasatinib_v_CUTTL1_deseq'                    : pd.read_csv(os.path.join(in_dir, 'Dasatinib_v_CUTTL1_GSE182680.tsv'), sep='\t'),
+    'shUSP11_v_CUTTL1_deseq'                      : pd.read_csv(os.path.join(in_dir, 'shUSP11_v_CUTTL1_GSE182680.tsv'), sep='\t'),
+    'shUSP11Dex_v_Dex_CUTTL1_deseq'               : pd.read_csv(os.path.join(in_dir, 'shUSP11Dex_v_Dex_CUTTL_GSE182680.tsv'), sep='\t'),
+    'Dex48hr_v_DND41_deseq'                       : pd.read_csv(os.path.join(in_dir, 'Dex48hr_v_DND41_GSE182680.tsv'), sep='\t'),
+    'Dex72hr_v_DND41_deseq'                           : pd.read_csv(os.path.join(in_dir, 'Dex_v_DND41_GSE182680.tsv'), sep='\t'),
+    'DexUSP7i_v_USP7i_72h_DND41_deseq'            : pd.read_csv(os.path.join(in_dir, 'DexUSP7i_v_USP7i_72h_DND41_GSE182680.tsv'), sep='\t'),
+    'DexUSP7i_v_USP7i_48h_DND41_deseq'            : pd.read_csv(os.path.join(in_dir, 'DexUSP7i_v_USP7i_48h_DND41_GSE182680.tsv'), sep='\t'),
+    # #Kevin RNA-seq
+    'Kevin_CTX712_24_vs_DMSO_24_deseq'   : pd.read_csv(os.path.join(in_dir, 'Kevin_CTX-712_24_vs_DMSO_24_Results.csv')),
+    'Kevin_CTX712_6_vs_DMSO_6_deseq'      : pd.read_csv(os.path.join(in_dir, 'Kevin_CTX712_6_vs_DMSO_6_Results.csv')),
+    'Kevin_E7107_6_vs_DMSO_6_deseq'       : pd.read_csv(os.path.join(in_dir, 'Kevin_E7107_6_vs_DMSO_6_Results.csv')),
+    'Kevin_E7107_24_vs_DMSO_24_deseq'     : pd.read_csv(os.path.join(in_dir, 'Kevin_E7107_24_vs_DMSO_24_Results.csv')),
+    'Kevin_GNF2133_6_vs_DMSO_6_deseq'     : pd.read_csv(os.path.join(in_dir, 'Kevin_GNF2133_6_vs_DMSO_6_Results.csv')),
+    'Kevin_GNF2133_24_vs_DMSO_24_deseq'   : pd.read_csv(os.path.join(in_dir, 'Kevin_GNF2133_24_vs_DMSO_24_Results.csv')),
+    'Kevin_THZ531_6_vs_DMSO_6_deseq'      : pd.read_csv(os.path.join(in_dir, 'Kevin_THZ531_6_vs_DMSO_6_Results.csv')),
+    'Kevin_THZ531_24_vs_DMSO_24_deseq'    : pd.read_csv(os.path.join(in_dir, 'Kevin_THZ531_24_vs_DMSO_24_Results.csv'))
+    #Kevin_phosphoproteomics
     }
 
 df_E7107_NW_MS                          = pd.read_excel(os.path.join(in_dir,  "PN 031821_tc-786_Marinaccio_C_humanTMT16_Northwestern.xlsx"), sheet_name="tc-786_proteinquant", skiprows=4, header=1)
 df_E7107_rescue                         = pd.read_excel(os.path.join(in_dir,  "NMD-related-Table 5. E7107 and NMDi-associated gene exprression changes (CUTLL1, 24h).xlsx"), sheet_name="E7107_vs_E7107-NMDi.htseq.edgeR", skiprows=1)
+# df_E7107_rescue                         = pd.read_excel('/Users/kachrist/Desktop/NMD-related-Table 5. E7107 and NMDi-associated gene exprression changes (CUTLL1, 24h).xlsx', sheet_name="E7107_vs_E7107-NMDi.htseq.edgeR", skiprows=1)
+
+
+print(' -- Data read succesfully')
+
+print('\n -- Cleaning data frames...')
+
+def clean_pvals_in_dict(dict_df):
+    """
+    Cleans each DataFrame in dict_df by:
+      - Removing rows where padj/FDR/pval is NA, inf, or <= 0.
+      - Optionally resetting the index.
+    """
+    for key, df in dict_df.items():
+        cols = [c for c in df.columns if c.lower() in ['padj', 'fdr', 'pval', 'p.value', 'adj p val_t allvsthymus_']]
+        if not cols:
+            continue
+
+        for col in cols:
+            # Convert to numeric safely
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+            # Drop rows with invalid entries
+            df = df[
+                df[col].notna() &
+                np.isfinite(df[col]) &
+                (df[col] > 0)
+            ]
+
+        dict_df[key] = df.reset_index(drop=True)
+        # print(f"Cleaned {key}: {len(df)} rows remaining after removing invalid p-values/FDRs.")
+
+    return dict_df
+
+dict_df = clean_pvals_in_dict(dict_df)
+
+print(' -- Data frames cleaned')
 
 
 #%% ===========================================================================
@@ -204,24 +351,19 @@ df_E7107_rescue                         = pd.read_excel(os.path.join(in_dir,  "N
 # The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
 
 # . o O - - - CHANGE LIST OF GENES HERE - - - O o .
-genes_of_interest = ['ASNS', 'MYC', 'IKZF1', 'TAL1', 'TP53', 'NOTCH1', 'CDKN2A', 'CDKN2B', 'MTOR', 'DHFR', 'NRK1', 'NRK2', 'NMNAT', 'URH1', 'PNP1', 'NMRK1', 'NMRK2', 'NAPRT', 'NADS', 'ATF4']
+genes_of_interest = ['MMP1', 'MMP2', 'MMP3', 'MMP4', 'MMP5', 'MMP6', 'MMP7', 'MMP8', 'MMP9', 'MMP10', 'MMP11', 'MMP12', 'MMP13', 'MMP14', 'MMP15', 'MMP16', 'MMP17', 'MMP18', 'MMP19', 'MMP20', 'MMP21', 'MMP22', 'MMP23', 'MMP24', 'MMP25', 'MMP26', 'MMP27', 'MMP28', 'MMP29', 'MMP30', 'MMP31', 'MMP32', 'MMP33', 'MMP34', 'MMP35', 'MMP36', 'MMP37', 'MMP38', 'MMP39', 'MMP40', 'MMP41', 'MMP42', 'MMP43', 'MMP44', 'MMP45', 'MMP46', 'MMP47', 'MMP48', 'MMP49', 'MMP50', 'MMP51', 'MMP52', 'MMP53', 'MMP54', 'MMP55', 'MMP56', 'MMP57', 'MMP58', 'MMP59', 'MMP60', 'MMP61', 'MMP62', 'MMP63', 'MMP64', 'MMP65', 'MMP66', 'MMP67', 'MMP68', 'MMP69', 'MMP70', 'MMP71']
+# genes_of_interest = ['EZH2']
 
-genes_of_interest = ['MMS22L', 'TONSL']
-
-# genes_of_interest = KTC_GetGeneSet('GOBP_INTEGRATED_STRESS_RESPONSE_SIGNALING')
-
+from KTC_functions import KTC_make_list
 
 plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
+
 
 # =============================================================================
 # Volcano Plot function
 # =============================================================================
 
-def pval_Clamper(_float):
-	if _float < min_pval:
-		return min_pval
-	else:
-		return _float
+
 
 #This is the main function for generating volcano plots. It takes data and a type of plot (splicing, DGE, proteomics).
 def Volcano(dict_volcano, name, analType):
@@ -303,7 +445,8 @@ def Volcano(dict_volcano, name, analType):
     ax = plt.gca()
     ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
     ax.xaxis.set_major_locator(MaxNLocator(nbins=4))
-    path_file_out = os.path.join(out_dir, name + '.svg')
+    path_file_out = os.path.join(out_dir, name + '.png')
+    # print(out_dir, name, path_file_out)
     # path_file_out = out_dir + name + '.png'
     plot_path_list.append(path_file_out)
     plt.savefig(path_file_out)
@@ -325,6 +468,13 @@ def add_appearance(geneName, alreadyAdded):
 			appearances[geneName] += 1
 		else:
 			appearances[geneName] = 1
+
+def pval_Clamper(_float):
+	if _float < min_pval:
+		return min_pval
+	else:
+		return _float
+
 
 # Iterating through the dataframes and generating graphs
 print('--- Settings ---')
@@ -395,8 +545,11 @@ for df_key in dict_df:
             if 'edgeR' in df_key:
                 gene = str(row['geneSymbol']).upper()
                 l2FC = row['log2FC']
-            else:
+            elif 'deseq' in df_key:
                 gene = str(row['gene_symbol']).upper()
+                l2FC = row['log2FoldChange']
+            elif 'ATAC' in df_key:
+                gene = str(row['Gene Name']).upper()
                 l2FC = row['log2FoldChange']
             pval = row['padj']
             line = '%s,%.3f,%.3f' %(gene, pval, l2FC)
@@ -447,6 +600,10 @@ for df_key in dict_df:
                 gene = row['Genes']
                 l2FC = row['log2FC']
                 pval = row['p-value']
+            elif 'Freya' in df_key:
+                gene = row['Genes']
+                l2FC = row['logFC']
+                pval = row['adj.P.Val']
             else:
                 gene = str(row['GeneSymbol']).capitalize()
                 l2FC = row['log2FC']
@@ -552,7 +709,7 @@ for protein in sorted(genes_of_interest):
         plt.gcf().text(0.5, 0.5, '%s\nnot found in data' %(protein), fontsize=12 * scale_factor, ha='center', va='center', color='red')
         print('NMDi plot failed for: %s' %(protein))
 
-    path_file_out = out_dir + '%s_E7107_NMDi_rescue.png' %(protein)
+    path_file_out = os.path.join(out_dir, f'{protein}_E7107_NMDi_rescue.png')
     plot_path_list.append(path_file_out)
     dict_pdf_layout['E7107 and NMDi-associated gene expression changes (CUTLL1, 24h)'].append(os.path.basename(path_file_out).split('.png')[0])
     plt.xlabel("", fontsize=30)
@@ -561,6 +718,7 @@ for protein in sorted(genes_of_interest):
     plt.xticks(fontsize=50)
     plt.yticks(fontsize=50)
     plt.savefig(path_file_out)
+    # print(path_file_out)
     plt.show()
     plt.close()
 
@@ -634,7 +792,7 @@ for p in sorted(genes_of_interest):
     else:
         plt.gcf().text(0.5, 0.5, '%s\nnot found in data' %(protein), fontsize=12 * scale_factor, ha='center', va='center', color='red')
 
-    path_file_out = out_dir + 'E7107_MS_%s.png' %(protein)
+    path_file_out = os.path.join(out_dir, f"E7107_MS_{protein}.png")
     plot_path_list.append(path_file_out)
     # print(os.path.basename(path_file_out).split('.png')[0])
     dict_pdf_layout['Proteomics on E7107 treatment - Data from Northwestern'].append(os.path.basename(path_file_out).split('.png')[0])
@@ -642,7 +800,7 @@ for p in sorted(genes_of_interest):
     plt.show()
     plt.close()
 
-
+print(out_dir)
 
 # =============================================================================
 # Generating a pdf
@@ -760,11 +918,15 @@ else:
 
 
 #%% To satisfy the curious, this section prints out the genes that appear the most across all scanned dataframes
-thresh_appearance_fraction = 3 # A gene must appear in at least 1 in every n dataframes to be considered a frequent hit
+thresh_appearance_fraction = 6 # A gene must appear in at least 1 in every n dataframes to be considered a frequent hit
 thresh_appearances = math.ceil(len(dict_df)/thresh_appearance_fraction) #How many dataframes must a gene have been seen in before it is interesting?
 frequent_genes = [key for key, value in appearances.items() if value >= thresh_appearances]
 frequent_genes_sorted = sorted(frequent_genes, key=lambda k: appearances[k], reverse=True)
+frequent_genes_sorted.remove('NAN')
 print()
 print("Genes found %i or more times in the %i dataframes:" %(thresh_appearances, len(dict_df)))
 for gene in frequent_genes_sorted:
     print(gene, appearances[gene])
+
+list_frequent_genes_sorted = '", "'.join(frequent_genes_sorted)
+print('["' + list_frequent_genes_sorted + '"]')
