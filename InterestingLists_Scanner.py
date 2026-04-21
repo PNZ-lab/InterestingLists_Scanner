@@ -23,6 +23,7 @@ from matplotlib.ticker import MaxNLocator
 # =============================================================================
 
 in_dir       = '/Volumes/kachrist/shares/cmgg_pnlab/Kasper/Data/Interesting_Lists' # Directory where all "Interesting lists" are located
+in_dir       = '/Users/kachrist/Desktop/Interesting_Lists_Desktop'
 out_dir      = r'/Users/kachrist/Desktop/out_dir' #Directory where plots are saved
 path_pdf     = os.path.join(out_dir, 'InterestingLists.pdf') #Name of pdf file produced. Output directory is 
 
@@ -461,12 +462,8 @@ print(' -- Data frames cleaned')
 # The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
 
 # . o O - - - CHANGE LIST OF GENES HERE - - - O o .
-genes_of_interest = ['ATF4', 'DDIT3', 'CHOP', 'ATF3', 'ASNS', 'CARS', 'PSAT1', 'CDKN1A', 'SESN1', 'SESN2', 'SRSF1', 'SRSF2', 'SRSF3', 'HNRNPC', 'DDX5', 'MYC', 'SF3B1', 'HSPA5', 'HERPUD1']
-genes_of_interest = ['ATP5C1']
-# genes_of_interest.extend(['ATP6AP2'])
-# genes_of_interest = ['ATP6AP2']
-# print(genes_of_interest[:-1])
-# 
+genes_of_interest = ['PSIP1', 'MEN1', 'KMT2A']
+
 
 plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
 
@@ -772,7 +769,6 @@ for df_key in dict_df:
 
 # Creating graphs for NMDi rescue
 import seaborn as sns
-import numpy as np
 
 samples = ["CUTLL1.3nM.E7107.Rep1", "CUTLL1.3nM.E7107.Rep2", "CUTLL1.3nM.E7107.Rep3", "CUTLL1.3nM.E7107.5uM.NMDi.Rep1", "CUTLL1.3nM.E7107.5uM.NMDi.Rep2", "CUTLL1.3nM.E7107.5uM.NMDi.Rep3"]
 
@@ -1078,3 +1074,10 @@ for gene in frequent_genes_sorted:
 
 list_frequent_genes_sorted = '", "'.join(frequent_genes_sorted)
 print('["' + list_frequent_genes_sorted + '"]')
+
+
+print(len(dict_df))
+
+
+for d in dict_df:
+    print(d)
