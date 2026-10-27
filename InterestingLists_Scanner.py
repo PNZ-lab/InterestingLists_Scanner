@@ -82,7 +82,7 @@ dict_pdf_layout = {
     'EZH2 Inhibitor GSK126' : ['GSK126_v_DMSO_proteomics_perseus'],
     'ATAC in EZH2 KO' : ['PRC2_ATAC_KO1', 'PRC2_ATAC_KO2', 'PRC2_ATAC_KO'],
     # Various KDs
-    'Various KDs' : ['shPSMG1_edgeR', 'HNRNPC_KD_v_MHCC97_deseq'],
+    'Various KDs' : ['shPSMG1_edgeR', 'HNRNPC_KD_v_MHCC97_deseq', 'MM_EZH2KO1_deseq', 'MM_EZH2KO2_deseq'],
     #Jonas HNRNPC KD
     'Jonas HNRNPC KD' : ['HNRNPC_KD_v_3d_deseq', 'HNRNPC_KD_v_7d_deseq'],
     #Igor E7107 proteomics
@@ -269,6 +269,10 @@ dict_df = {
 
     # shPSMG1
     'shPSMG1_edgeR'                      : pd.read_csv(os.path.join(in_dir, 'shCtrl_vs_shPSMG1.htseq.edgeR.txt'), sep='\t'),
+
+    # MM EZH2 KO
+    'MM_EZH2KO1_deseq'                         : pd.read_csv(os.path.join(in_dir, 'GSE127261_MM_EZH2KO1.tsv'), sep='\t'),
+    'MM_EZH2KO2_deseq'                         : pd.read_csv(os.path.join(in_dir, 'GSE127261_MM_EZH2KO2.tsv'), sep='\t'),
 
     #CNS vs BM
     'CNS_v_BM_Muench_2017_deseq'         : pd.read_csv(os.path.join(in_dir, 'CNS_v_BM_GSE89710.tsv'), sep='\t'),
@@ -462,7 +466,31 @@ print(' -- Data frames cleaned')
 # The genes will be reformatted in-script (capitalized or capitalizing only the first letter for proteins and genes, respectively)
 
 # . o O - - - CHANGE LIST OF GENES HERE - - - O o .
-genes_of_interest = ['PSIP1', 'MEN1', 'KMT2A']
+genes_of_interest = [
+    'TOMM20',
+    'BCL2',
+    'MCL1',
+    'BCL2L1',
+    'PMAIP1',
+    'BBC3',
+    'FIS1',
+    'OPA1',
+    'DNM1L',
+    'PINK1',
+    'PRKN',
+    'HERPUD1',
+    'DDIT4',
+    'STARD4',
+    'ALAS1',
+    'TOB2',
+    'NFE2L1',
+    'CAVIN1',
+    'GPX4',
+    'ATF4',
+    "B4GALT5", "FANCB", "SARAF", "R3HCC1L", "TMCC3", "TOB2", "ZNF845", "SREBF1", "HERPUD1", "EPN3", "MAPK4", "ZNF721", "ZNG1F;ZNG1C;ZNG1E", "GMPR", "UQCRH", "CNBP", "FAM110C", "EFCAB7", "UBE2W", "GPNMB", "DDIT4", "MCF2L2", "ZSCAN22", 'COX7A2L', 'NME4', 'DNAJB8',
+    "TCEA2", "GPSM3", "RINL", "QPCTL", "RAB5IF", "MRPL35", "ELF4", "RDH10", "IFIT3", "PPP1R13B", "HPX", "MLXIP", "NTAQ1", "G6PC3"
+    ]
+
 
 
 plot_path_list = [] # Will contain paths to all figures generated for pdf generation. Populated automatically.
